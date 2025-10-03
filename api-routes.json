@@ -1,0 +1,148 @@
+{
+  "baseUrl": "",
+  "routes": {
+    "notasEntrada": {
+      "listAll": {
+        "method": "GET",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/359e545e-7939-48e3-82d3-b4370323c39b",
+        "description": "Listagem notas de entrada",
+        "params": [],
+        "response": "Lista de notas de entrada"
+      },
+      "getDetail": {
+        "method": "GET",
+        "endpoint": "",
+        "description": "Detail nota entrada",
+        "params": ["notaId"],
+        "response": "Detalhes completos de uma nota de entrada"
+      },
+      "getProduto": {
+        "method": "GET",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/c4c8af92-0ec2-41e7-af3e-8c27d768b00c",
+        "description": "Get produto nota entrada",
+        "params": ["nrNota", "produto"],
+        "response": "Detalhes de um produto específico da nota de entrada"
+      },
+      "getMatchByProdCod": {
+        "method": "GET",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cdes",
+        "description": "Get match notas entrada by docCodSaida nota saída - Retorna NEs que contêm produtos da NS",
+        "params": ["docCodSaida"],
+        "response": "Lista de notas de entrada com produtos em comum: {data: [{detalheNota, produtos}]}"
+      }
+    },
+    "notasSaida": {
+      "listAll": {
+        "method": "GET",
+        "endpoint": "",
+        "description": "Listagem notas saída",
+        "params": [],
+        "response": "Lista de notas de saída"
+      },
+      "listFront": {
+        "method": "GET",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cded",
+        "description": "Listagem front notas saída",
+        "params": [],
+        "response": "Lista de notas de saída formatada para o frontend"
+      },
+      "getDetail": {
+        "method": "GET",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/f1eb8724-fbf9-4aab-a43b-c6176485af92",
+        "description": "Detail nota saída",
+        "params": ["docCod"],
+        "response": "Detalhes completos de uma nota de saída"
+      },
+      "getDetailWithProducts": {
+        "method": "GET",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cdey",
+        "description": "Detail nota saída com produtos",
+        "params": ["docCod"],
+        "response": "Detalhes completos de uma nota de saída incluindo produtos: {detalheNota, produtos}"
+      },
+      "getProduto": {
+        "method": "GET",
+        "endpoint": "",
+        "description": "Get Produto nota saída",
+        "params": ["produtoId", "notaId"],
+        "response": "Detalhes de um produto específico da nota de saída"
+      },
+      "processaNF": {
+        "method": "POST",
+        "endpoint": "",
+        "description": "Processa nf saída",
+        "body": {
+          "notaId": "string",
+          "produtos": "array"
+        },
+        "response": "Resultado do processamento da nota de saída"
+      },
+      "processaNFComBaseEntrada": {
+        "method": "POST",
+        "endpoint": "",
+        "description": "Processa nf saída com base na de entrada",
+        "body": {
+          "notaSaidaId": "string",
+          "notaEntradaId": "string",
+          "produtos": "array"
+        },
+        "response": "Resultado do processamento com alocação automática"
+      }
+    },
+    "produtos": {
+      "listAll": {
+        "method": "GET",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/29a938fc-eb12-49ed-81d0-e2fa6db44ac2",
+        "description": "List produtos",
+        "params": [],
+        "response": "Lista de todos os produtos"
+      }
+    },
+    "xml": {
+      "getDetailByXml": {
+        "method": "GET",
+        "endpoint": "",
+        "description": "Get detail nota by xml",
+        "params": ["xmlFile"],
+        "response": "Detalhes extraídos do XML da nota"
+      },
+      "processamentoXml": {
+        "method": "POST",
+        "endpoint": "",
+        "description": "Processamento xml parte de salvar do noss...",
+        "body": {
+          "xmlData": "string",
+          "tipoNota": "entrada|saida"
+        },
+        "response": "Nota processada e salva no sistema"
+      }
+    },
+    "alocacao": {
+      "listagemNotasProdutos": {
+        "method": "GET",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cdes",
+        "description": "Listagem de notas e produtos com base na nota de saída",
+        "params": ["filters"],
+        "response": "Lista de notas e produtos para alocação"
+      },
+      "processar": {
+        "method": "POST",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/6ce267f3-3048-4ed9-994b-16ba1567b7ef",
+        "description": "Processa a alocação de uma Nota de Saída com suas Notas de Entrada",
+        "body": {
+          "docCodSaida": "number",
+          "produtos": [
+            {
+              "docCodEntrada": "number",
+              "prdCod": "number",
+              "quantidade": "number",
+              "dprCodSeqEntrada": "number",
+              "dprCodSeqSaida": "number"
+            }
+          ]
+        },
+        "response": "Confirmação do processamento da alocação"
+      }
+    }
+  }
+}
