@@ -29,7 +29,7 @@ export interface PayloadProcessamentoAlocacao {
 export interface RespostaProcessamento {
   success: boolean;
   message?: string;
-  data?: any;
+  data?: unknown;
 }
 
 /**

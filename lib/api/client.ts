@@ -8,7 +8,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status?: number,
-    public data?: any
+    public data?: unknown
   ) {
     super(message);
     this.name = 'ApiError';
@@ -43,9 +43,9 @@ export async function apiClient<T>(
     console.log('[API Client] Headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+      const errorData = await response.json().catch(() => ({})) as unknown;
       throw new ApiError(
-        errorData.message || `Erro HTTP: ${response.status}`,
+        errorData as string || `Erro HTTP: ${response.status}`,
         response.status,
         errorData
       );
@@ -86,14 +86,14 @@ export async function apiClient<T>(
  */
 export function getEndpoint(path: string): string {
   const parts = path.split('.');
-  let current: any = apiRoutes.routes;
+  let current: unknown = apiRoutes.routes;
   
   for (const part of parts) {
-    current = current[part];
+    current = (current as Record<string, unknown>)[part];
     if (!current) {
       throw new Error(`Endpoint não encontrado: ${path}`);
     }
   }
   
-  return current.endpoint;
+  return (current as Record<string, unknown>).endpoint as string;
 }

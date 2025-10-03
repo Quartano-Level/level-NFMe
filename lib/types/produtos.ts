@@ -15,7 +15,7 @@ export interface Produto {
   prdVldSituacao?: number;
   prdTimAtualiza?: number;
   // Permitir outros campos da API
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface ListaProdutosResponse {

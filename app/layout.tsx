@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ThemeRegistry from "./ThemeRegistry";
+import { QueryProvider } from "@/lib/providers/QueryProvider";
 
 export const metadata: Metadata = {
   title: "Savixx - Alocação de Estoque",
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <ThemeRegistry>{children}</ThemeRegistry>
+        <QueryProvider>
+          <ThemeRegistry>{children}</ThemeRegistry>
+        </QueryProvider>
       </body>
     </html>
   );

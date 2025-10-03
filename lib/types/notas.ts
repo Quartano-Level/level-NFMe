@@ -20,7 +20,7 @@ export interface ProdutoNotaSaida {
   lteEspCod?: string;
   prdEspCodExport?: string;
   // Permitir outros campos da API
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface NotaSaidaDetalhada {
@@ -34,6 +34,7 @@ export interface NotaSaidaDetalhada {
     };
     rows: ProdutoNotaSaida[];
   };
+  infosAdicionais: string;
 }
 
 export interface NotaSaida {
@@ -65,7 +66,7 @@ export interface NotaSaida {
   vldNfe: number;
   vldAutorizado: number;
   // Permitir outros campos da API
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface ListaNotasSaidaResponse {
@@ -104,7 +105,7 @@ export interface NotaEntrada {
   fisEspObs?: string;
   gcdDesNome?: string;
   // Permitir outros campos da API
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface ListaNotasEntradaResponse {
