@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, SyntheticEvent } from "react";
-import useSWR from "swr";
 import {
   Button,
   Card,
@@ -35,9 +34,9 @@ import WarningIcon from "@mui/icons-material/Warning";
 import SendIcon from "@mui/icons-material/Send";
 
 // API
-import { getNotasEntrada, getNotasEntradaByNotaSaida, getProdutoDaNotaEntrada } from "@/lib/api/notas-entrada";
+import { getNotasEntradaByNotaSaida } from "@/lib/api/notas-entrada";
 import { processarAlocacao, type PayloadProcessamentoAlocacao } from "@/lib/api/alocacao";
-import type { NotaEntrada } from "@/lib/types/notas";
+import type { DetalheNota } from "@/lib/api/api_info";
 
 // ==================== TIPOS ====================
 
@@ -102,10 +101,10 @@ const AlocacaoPorProduto = ({
   produto: ProdutoDemanda;
   docCodSaida: number;
   alocacoesProduto: AlocacaoItem[];
-  onSelecaoNE: (ne: NotaEntrada, selecionado: boolean) => void;
+  onSelecaoNE: (ne: DetalheNota, selecionado: boolean) => void;
   onQuantidadeChange: (docCodEntrada: number, quantidade: number) => void;
 }) => {
-  const [nesRelevantes, setNesRelevantes] = useState<NotaEntrada[]>([]);
+  const [nesRelevantes, setNesRelevantes] = useState<DetalheNota[]>([]);
   const [isLoadingNes, setIsLoadingNes] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [fifoAplicado, setFifoAplicado] = useState(false);
@@ -136,16 +135,16 @@ const AlocacaoPorProduto = ({
         });
 
         setNesRelevantes(nesParaExibir);
-      } catch (err: any) {
+      } catch (err) {
         console.error('[AlocacaoPorProduto] ❌ Erro ao carregar NEs:', err);
-        setError(err);
+        setError(err instanceof Error ? err : new Error('Erro desconhecido'));
       } finally {
         setIsLoadingNes(false);
       }
     };
 
     carregarNEs();
-  }, [produto.prdCod, docCodSaida]);
+  }, [produto.prdCod, produto.nome, docCodSaida]);
 
   // Aplicar FIFO automaticamente quando NEs carregarem
   useEffect(() => {
@@ -329,7 +328,7 @@ export const PainelAlocacaoDetalhada = ({
     .flat()
     .reduce((acc, a) => acc + a.quantidade, 0);
 
-  const handleSelecaoNE = (produtoId: string, ne: NotaEntrada, selecionado: boolean) => {
+  const handleSelecaoNE = (produtoId: string, ne: DetalheNota, selecionado: boolean) => {
     setAlocacoesPorProduto((prev) => {
       const alocacoesAtuais = prev[produtoId] || [];
       if (selecionado) {
@@ -380,9 +379,10 @@ export const PainelAlocacaoDetalhada = ({
       const resposta = await processarAlocacao(payload);
       setResultado({ sucesso: true, mensagem: resposta.message || "Alocação processada com sucesso!" });
       onProcessar();
-    } catch (error: any) {
+    } catch (error) {
       console.error("❌ Erro ao processar:", error);
-      setResultado({ sucesso: false, mensagem: error.message || "Erro ao processar alocação" });
+      const mensagemErro = error instanceof Error ? error.message : "Erro ao processar alocação";
+      setResultado({ sucesso: false, mensagem: mensagemErro });
     } finally {
       setProcessando(false);
     }

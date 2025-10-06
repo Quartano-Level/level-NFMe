@@ -23,7 +23,6 @@ import {
 import {
   DetailNotaSaidaResponse,
   DetalheNota,
-  ProdutoRow,
 } from "@/lib/api/api_info";
 import { TabPanel } from "./TabPanel";
 import { AlocacaoPorProduto } from "./AlocacaoPorProduto";

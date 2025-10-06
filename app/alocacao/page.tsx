@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TabelaNotasSaida } from "./components/TabelaNotasSaida";
+import { TabelaNotasSaida } from "../components/TabelaNotasSaida";
 import { PainelAlocacaoDetalhada } from "./components/PainelAlocacaoDetalhada";
 import { Container, Typography, Box } from "@mui/material";
 
@@ -29,12 +29,6 @@ export default function AlocacaoPage() {
   const [notaSaidaSelecionada, setNotaSaidaSelecionada] =
     useState<NotaSaida | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  // Funções
-  const handleIniciarAlocacao = (ns: NotaSaida) => {
-    setNotaSaidaSelecionada(ns);
-    setTelaAtual("alocacao");
-  };
 
   const handleProcessar = async () => {
     setIsLoading(true);
@@ -68,7 +62,7 @@ export default function AlocacaoPage() {
       <Box>
         {telaAtual === "lista" ? (
           <Box sx={{ width: '100%', maxWidth: '1200px', mx: 'auto', mt: { xs: 4, md: 8 } }}>
-            <TabelaNotasSaida onAlocar={handleIniciarAlocacao} />
+            <TabelaNotasSaida />
           </Box>
         ) : (
           <Box sx={{ width: '100%' }}>

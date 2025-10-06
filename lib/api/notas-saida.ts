@@ -5,7 +5,6 @@
 import { apiClient } from './client';
 import { 
   DetailNotaSaidaResponse, 
-  ListagemNotasSaidaResponse, 
   ListagemNotasSaidaComVinculoResponse,
   urls 
 } from './api_info';

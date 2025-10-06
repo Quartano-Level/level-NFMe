@@ -12,13 +12,11 @@ import {
   CircularProgress,
   Typography,
   Box,
-  Chip,
   Link,
 } from "@mui/material";
 import { getNotasSaida } from "@/lib/api/notas-saida";
 import { useQuery } from "@tanstack/react-query";
 import AlertaNotasSemVinculo from "../alocacao/components/AlertaNotasSemVinculo";
-import type { DetalheNota } from "@/lib/api/api_info";
 
 export const TabelaNotasSaida = () => {
   const query = useQuery({
@@ -47,12 +45,6 @@ export const TabelaNotasSaida = () => {
   const notasSemVinculo = data?.sem_vinculo?.rows || [];
   const totalPendentes = data?.pendentes?.count || 0;
   const totalSemVinculo = data?.sem_vinculo?.count || 0;
-
-  // Handler para ver detalhes de nota sem vínculo
-  const handleVerDetalhes = (nota: DetalheNota) => {
-    console.log('Ver detalhes da nota:', nota);
-    // TODO: Implementar modal ou navegação para detalhes
-  };
 
   if (totalPendentes === 0 && totalSemVinculo === 0) {
     return (
