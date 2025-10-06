@@ -46,6 +46,13 @@
         "params": [],
         "response": "Lista de notas de saída formatada para o frontend"
       },
+      "listSemVinculo": {
+        "method": "GET",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cded",
+        "description": "Listagem front - retorna pendentes E sem_vinculo",
+        "params": [],
+        "response": "Objeto com pendentes e sem_vinculo, ambos com count, pageNumber e rows[]"
+      },
       "getDetail": {
         "method": "GET",
         "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/f1eb8724-fbf9-4aab-a43b-c6176485af92",

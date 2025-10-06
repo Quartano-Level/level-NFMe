@@ -75,6 +75,14 @@ export interface ListaNotasSaidaResponse {
   rows: NotaSaida[];
 }
 
+/**
+ * Response da API listFront - separada em pendentes e sem_vinculo
+ */
+export interface ListaNotasSaidaComVinculoResponse {
+  pendentes: ListaNotasSaidaResponse;
+  sem_vinculo: ListaNotasSaidaResponse;
+}
+
 export interface NotaEntrada {
   filCod: number;
   docTip: number;

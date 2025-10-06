@@ -28,6 +28,7 @@ import {
 import { TabPanel } from "./TabPanel";
 import { AlocacaoPorProduto } from "./AlocacaoPorProduto";
 import { ResumoAlocacao } from "./ResumoAlocacao";
+import { ReferenciaDistribuicao } from "./ReferenciaDistribuicao";
 import { DebugPayload } from "./DebugPayload";
 import Link from "next/link";
 
@@ -217,6 +218,11 @@ export const PainelAlocacaoDetalhada = ({
         </Alert>
       )}
 
+      {/* Referência de Distribuição - Sticky */}
+      {!isLoading && detalheNotaSaida.infosAdicionais && (
+        <ReferenciaDistribuicao texto={detalheNotaSaida.infosAdicionais} />
+      )}
+
       {!isLoading &&  (
         <ResumoAlocacao
           subheader={`NS nº ${detalheNotaSaida.detalheNota.docEspNumero}`}
@@ -228,7 +234,6 @@ export const PainelAlocacaoDetalhada = ({
           isLoading={processando || isLoading}
           onProcessar={handleProcessarAlocacao}
           processarHabilitado={isProcessamentoHabilitado}
-          infoAdicional={detalheNotaSaida.infosAdicionais}
         />
       )}
 

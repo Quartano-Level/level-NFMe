@@ -8,7 +8,6 @@ import {
   CardHeader,
   LinearProgress,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
@@ -25,7 +24,6 @@ interface ResumoAlocacaoProps {
   isLoading?: boolean;
   onProcessar: () => void;
   processarHabilitado: boolean;
-  infoAdicional?: string;
 }
 
 export function ResumoAlocacao({
@@ -39,7 +37,6 @@ export function ResumoAlocacao({
   isLoading,
   onProcessar,
   processarHabilitado,
-  infoAdicional,
 }: ResumoAlocacaoProps) {
   return (
     <Card variant="outlined">
@@ -88,33 +85,6 @@ export function ResumoAlocacao({
             </Typography>
           </Box>
         </Stack>
-
-        {infoAdicional && (
-          <Box sx={{ mt: 3 }}>
-            <Box
-              sx={{ 
-                display: "flex", 
-                flexDirection: "column",
-                justifyContent: "space-between", 
-                gap: 1,
-                mb: 0.5,
-                p: 1,
-                width: "100%",
-              }}
-            >
-              <Typography variant="body2" color="text.secondary">
-                Informações Adicionais
-              </Typography>
-              <TextField
-                multiline
-                disabled
-                value={infoAdicional}
-                rows={3}
-                inputProps={{ style: {whiteSpace: 'pre-wrap' } }}
-              />
-            </Box>
-          </Box>
-        )}
 
         <Box sx={{ mt: 3 }}>
           <Box

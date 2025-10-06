@@ -3,15 +3,28 @@
  */
 
 import { apiClient } from './client';
-import { DetailNotaSaidaResponse, ListagemNotasSaidaResponse, urls } from './api_info';
+import { 
+  DetailNotaSaidaResponse, 
+  ListagemNotasSaidaResponse, 
+  ListagemNotasSaidaComVinculoResponse,
+  urls 
+} from './api_info';
 
-export async function getNotasSaida(pageNumber: number = 1): Promise<ListagemNotasSaidaResponse> {
+/**
+ * Busca notas de saída - retorna pendentes E sem_vinculo
+ */
+export async function getNotasSaida(pageNumber: number = 1): Promise<ListagemNotasSaidaComVinculoResponse> {
   try {
     const endpoint = urls.listagemNotasSaida;
     
-    console.log('[API] Buscando notas de saída...', endpoint);
+    console.log('[API] Buscando notas de saída (pendentes e sem vínculo)...', endpoint);
     
-    const response = await apiClient<ListagemNotasSaidaResponse>(endpoint + pageNumber);
+    const response = await apiClient<ListagemNotasSaidaComVinculoResponse>(endpoint + pageNumber);
+
+    console.log('[API] ✅ Notas encontradas:', {
+      pendentes: response.pendentes.count,
+      sem_vinculo: response.sem_vinculo.count
+    });
 
     return response;
   } catch (error) {

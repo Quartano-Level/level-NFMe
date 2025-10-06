@@ -15,6 +15,14 @@ export interface ListagemNotasSaidaResponse {
   rows: DetalheNota[];
 }
 
+/**
+ * Response da listFront - retorna pendentes E sem_vinculo
+ */
+export interface ListagemNotasSaidaComVinculoResponse {
+  pendentes: ListagemNotasSaidaResponse;
+  sem_vinculo: ListagemNotasSaidaResponse;
+}
+
 export interface DetailNotaSaidaResponse {
   detalheNota: DetalheNota;
   produtos: Produtos;
