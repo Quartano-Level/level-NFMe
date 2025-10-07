@@ -4,14 +4,15 @@ import { Container, Typography, Box } from "@mui/material";
 import { useParams } from "next/navigation";
 import { getNotaSaidaDetalhada } from "@/lib/api/notas-saida";
 import { useQuery } from "@tanstack/react-query";
-import { PainelAlocacaoDetalhada } from "../../components/PainelAlocacaoDetalhada";
-import router from "next/router";
+import { PainelAlocacaoDetalhada } from "../components/PainelAlocacaoDetalhada";
+import { useRouter } from "next/navigation";
 
-export default function AlocacaoPage() {
+export default function AlocacaoNotaPage() {
   const { docCodSaida } = useParams<{ docCodSaida: string }>();
+  const router = useRouter();
 
   const query = useQuery({
-    queryKey: ["detalheNotaSaida"],
+    queryKey: ["detalheNotaSaida", docCodSaida],
     queryFn: async () => await getNotaSaidaDetalhada(Number(docCodSaida)),
   });
 
@@ -38,7 +39,17 @@ export default function AlocacaoPage() {
     return (
       <Container maxWidth="lg">
         <Box sx={{ my: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
+          <Typography 
+            variant="h4" 
+            component="h1" 
+            gutterBottom
+            sx={{
+              fontWeight: 700,
+              fontSize: '2rem',
+              color: '#1d1d1f',
+              letterSpacing: '-0.02em'
+            }}
+          >
             Erro ao carregar detalhes da nota de saída
           </Typography>
         </Box>
@@ -49,7 +60,17 @@ export default function AlocacaoPage() {
   return (
     <Container maxWidth="lg">
       <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography 
+          variant="h4" 
+          component="h1" 
+          gutterBottom
+          sx={{
+            fontWeight: 700,
+            fontSize: '2rem',
+            color: '#1d1d1f',
+            letterSpacing: '-0.02em'
+          }}
+        >
           Alocação de Estoque
         </Typography>
       </Box>

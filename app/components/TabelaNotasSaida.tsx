@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -13,18 +14,56 @@ import {
   Typography,
   Box,
   Link,
+  Alert,
+  AlertTitle,
 } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { getNotasSaida } from "@/lib/api/notas-saida";
+import { coletarXMLsSharePoint } from "@/lib/api/sharepoint";
 import { useQuery } from "@tanstack/react-query";
-import AlertaNotasSemVinculo from "../alocacao/components/AlertaNotasSemVinculo";
+import AlertaNotasSemVinculo from "./AlertaNotasSemVinculo";
 
 export const TabelaNotasSaida = () => {
+  const [coletando, setColetando] = useState(false);
+  const [resultado, setResultado] = useState<{ sucesso: boolean; mensagem: string } | null>(null);
+
   const query = useQuery({
     queryKey: ['notasSaidaPendentes'],
     queryFn: async () => await getNotasSaida(),
   });
 
-  const { data, error, isLoading } = query;
+  const { data, error, isLoading, refetch } = query;
+
+  const handleColetarXMLs = async () => {
+    try {
+      setColetando(true);
+      setResultado(null);
+      
+      console.log('[TabelaNotasSaida] 📥 Iniciando coleta de XMLs do SharePoint...');
+      
+      await coletarXMLsSharePoint();
+      
+      setResultado({ 
+        sucesso: true, 
+        mensagem: 'XMLs coletados com sucesso! Atualizando lista...' 
+      });
+      
+      // Aguarda 1 segundo para mostrar a mensagem de sucesso
+      setTimeout(async () => {
+        await refetch();
+        setResultado(null);
+        setColetando(false);
+      }, 1500);
+      
+    } catch (err) {
+      console.error('[TabelaNotasSaida] ❌ Erro ao coletar XMLs:', err);
+      setResultado({ 
+        sucesso: false, 
+        mensagem: 'Erro ao coletar as notas no SharePoint' 
+      });
+      setColetando(false);
+    }
+  };
 
   if (isLoading)
     return (
@@ -46,54 +85,114 @@ export const TabelaNotasSaida = () => {
   const totalPendentes = data?.pendentes?.count || 0;
   const totalSemVinculo = data?.sem_vinculo?.count || 0;
 
+  // Renderiza alertas e botão de atualização sempre
+  const renderHeader = () => (
+    <Box>
+      {/* Alerta de resultado da coleta */}
+      {resultado && (
+        <Alert 
+          severity={resultado.sucesso ? "success" : "error"}
+          sx={{ 
+            mb: 3,
+            border: `1px solid ${resultado.sucesso ? '#34c759' : '#ff3b30'}`,
+            borderRadius: '12px',
+            backgroundColor: resultado.sucesso ? '#f0fdf4' : '#fff5f5'
+          }}
+        >
+          <AlertTitle sx={{ fontWeight: 600, color: '#1d1d1f' }}>
+            {resultado.sucesso ? 'Sucesso!' : 'Erro'}
+          </AlertTitle>
+          <Typography sx={{ fontSize: '0.9375rem', color: '#1d1d1f' }}>
+            {resultado.mensagem}
+          </Typography>
+        </Alert>
+      )}
+
+      {/* Botão de atualização */}
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          variant="contained"
+          startIcon={coletando ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : <RefreshIcon />}
+          onClick={handleColetarXMLs}
+          disabled={coletando}
+          sx={{
+            backgroundColor: '#1d1d1f',
+            color: '#fff',
+            textTransform: 'none',
+            fontWeight: 600,
+            fontSize: '0.9375rem',
+            borderRadius: '10px',
+            px: 3,
+            py: 1.25,
+            boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: '#2c2c2e',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+            },
+            '&:disabled': {
+              backgroundColor: '#86868b',
+              color: '#fff'
+            }
+          }}
+        >
+          {coletando ? 'Coletando XMLs...' : 'Atualizar Notas'}
+        </Button>
+      </Box>
+    </Box>
+  );
+
   if (totalPendentes === 0 && totalSemVinculo === 0) {
     return (
-      <Paper 
-        elevation={0}
-        sx={{ 
-          p: 6, 
-          textAlign: 'center',
-          border: '1px solid #e5e5e7',
-          borderRadius: '12px',
-          backgroundColor: '#fafafa'
-        }}
-      >
-        <Box
-          sx={{
-            width: 64,
-            height: 64,
-            borderRadius: '16px',
-            backgroundColor: '#f0f0f0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 16px',
-            fontSize: '2rem'
-          }}
-        >
-          ✓
-        </Box>
-        <Typography 
-          variant="h6" 
+      <Box>
+        {renderHeader()}
+        
+        <Paper 
+          elevation={0}
           sx={{ 
-            fontWeight: 600,
-            fontSize: '1.125rem',
-            color: '#1d1d1f',
-            mb: 1
+            p: 6, 
+            textAlign: 'center',
+            border: '1px solid #e5e5e7',
+            borderRadius: '12px',
+            backgroundColor: '#fafafa'
           }}
         >
-          Tudo em dia
-        </Typography>
-        <Typography 
-          variant="body2" 
-          sx={{ 
-            color: '#86868b',
-            fontSize: '0.9375rem'
-          }}
-        >
-          Nenhuma nota pendente de alocação no momento.
-        </Typography>
-      </Paper>
+          <Box
+            sx={{
+              width: 64,
+              height: 64,
+              borderRadius: '16px',
+              backgroundColor: '#f0f0f0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 16px',
+              fontSize: '2rem'
+            }}
+          >
+            ✓
+          </Box>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              fontWeight: 600,
+              fontSize: '1.125rem',
+              color: '#1d1d1f',
+              mb: 1
+            }}
+          >
+            Tudo em dia
+          </Typography>
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              color: '#86868b',
+              fontSize: '0.9375rem'
+            }}
+          >
+            Nenhuma nota pendente de alocação no momento.
+          </Typography>
+        </Paper>
+      </Box>
     );
   }
 
@@ -106,6 +205,8 @@ export const TabelaNotasSaida = () => {
 
   return (
     <Box>
+      {renderHeader()}
+
       {/* Alerta para notas SEM vínculo - Monochrome */}
       {notasSemVinculo.length > 0 && (
         <AlertaNotasSemVinculo notas={notasSemVinculo} />
@@ -279,7 +380,7 @@ export const TabelaNotasSaida = () => {
                     </TableCell>
                     
                     <TableCell align="right">
-                      <Link href={`/alocacao/${ns.docCod}`} style={{ textDecoration: 'none' }}>
+                      <Link href={`/${ns.docCod}`} style={{ textDecoration: 'none' }}>
                         <Button 
                           variant="contained" 
                           size="small"
@@ -313,4 +414,3 @@ export const TabelaNotasSaida = () => {
     </Box>
   );
 };
-

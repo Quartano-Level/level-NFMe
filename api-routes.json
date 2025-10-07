@@ -53,6 +53,13 @@
         "params": [],
         "response": "Objeto com pendentes e sem_vinculo, ambos com count, pageNumber e rows[]"
       },
+      "coletarXMLsSharePoint": {
+        "method": "POST",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/97b0db9a-5fe3-43cb-ac07-ad3055f041ed",
+        "description": "Coleta novos arquivos XML do SharePoint e processa as notas",
+        "params": [],
+        "response": "Resultado da coleta e processamento dos XMLs"
+      },
       "getDetail": {
         "method": "GET",
         "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/f1eb8724-fbf9-4aab-a43b-c6176485af92",

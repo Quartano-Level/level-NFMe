@@ -7,6 +7,8 @@ export const urls = {
     "https://savixx-clonex-mp.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cdes",
   processarAlocacao:
     "https://savixx-clonex-mp.app.n8n.cloud/webhook/6ce267f3-3048-4ed9-994b-16ba1567b7ef",
+  coletarXMLsSharePoint:
+    "https://savixx-clonex-mp.app.n8n.cloud/webhook/97b0db9a-5fe3-43cb-ac07-ad3055f041ed",
 };
 
 export interface ListagemNotasSaidaResponse {
