@@ -100,7 +100,7 @@
           "notaEntradaId": "string",
           "produtos": "array"
         },
-        "response": "Resultado do processamento com alocação automática"
+        "response": "Resultado do processamento com Referência automática"
       }
     },
     "produtos": {
@@ -137,12 +137,12 @@
         "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cdes",
         "description": "Listagem de notas e produtos com base na nota de saída",
         "params": ["filters"],
-        "response": "Lista de notas e produtos para alocação"
+        "response": "Lista de notas e produtos para Referência"
       },
       "processar": {
         "method": "POST",
         "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/6ce267f3-3048-4ed9-994b-16ba1567b7ef",
-        "description": "Processa a alocação de uma Nota de Saída com suas Notas de Entrada",
+        "description": "Processa a Referência de uma Nota de Saída com suas Notas de Entrada",
         "body": {
           "docCodSaida": "number",
           "produtos": [
@@ -155,7 +155,7 @@
             }
           ]
         },
-        "response": "Confirmação do processamento da alocação"
+        "response": "Confirmação do processamento da Referência"
       }
     }
   }

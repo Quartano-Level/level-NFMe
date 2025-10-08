@@ -22,6 +22,7 @@ import { getNotasSaida } from "@/lib/api/notas-saida";
 import { coletarXMLsSharePoint } from "@/lib/api/sharepoint";
 import { useQuery } from "@tanstack/react-query";
 import AlertaNotasSemVinculo from "./AlertaNotasSemVinculo";
+import { formatCurrency } from "@/lib/utils/formatters";
 
 export const TabelaNotasSaida = () => {
   const [coletando, setColetando] = useState(false);
@@ -189,19 +190,12 @@ export const TabelaNotasSaida = () => {
               fontSize: '0.9375rem'
             }}
           >
-            Nenhuma nota pendente de alocação no momento.
+            Nenhuma nota pendente de Referência no momento.
           </Typography>
         </Paper>
       </Box>
     );
   }
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
 
   return (
     <Box>
@@ -248,7 +242,7 @@ export const TabelaNotasSaida = () => {
                 fontSize: '0.875rem'
               }}
             >
-              {totalPendentes} {totalPendentes === 1 ? 'nota pronta' : 'notas prontas'} para alocação
+              {totalPendentes} {totalPendentes === 1 ? 'nota pronta' : 'notas prontas'} para Referência
             </Typography>
           </Box>
           

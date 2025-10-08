@@ -55,7 +55,7 @@ export function ReferenciaDistribuicao({ texto }: ReferenciaDistribuicaoProps) {
               letterSpacing: '-0.02em',
             }}
           >
-            Referência de Distribuição
+            Informações Adicionais DANFE
           </Typography>
         </Box>
 

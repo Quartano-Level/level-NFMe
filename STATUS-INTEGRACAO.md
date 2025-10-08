@@ -1,4 +1,4 @@
-# 🎯 Status de Integração - Sistema de Alocação SAVIXX
+# 🎯 Status de Integração - Sistema de Referência SAVIXX
 
 **Data:** 02/10/2025  
 **Fase Atual:** Integração de APIs (Fase 2/5)
@@ -28,14 +28,14 @@
 - **Endpoint:** `GET /notas-entrada`
 - **Status:** Integrado com FIFO
 - **Registros:** 9 notas
-- **Uso:** Estoque disponível para alocação (FIFO)
+- **Uso:** Estoque disponível para Referência (FIFO)
 - **Arquivo:** `lib/api/notas-entrada.ts`
 
 ### 4. **Nota de Saída Detalhada (com Produtos)** ✅ NOVO!
 - **Endpoint:** `GET /notas-saida/detail-with-products?docCodSaida=`
 - **Status:** Integrado e funcionando
 - **Resposta:** `{ detalheNota, produtos: { count, summary, rows } }`
-- **Uso:** Carrega produtos completos de uma NS para alocação
+- **Uso:** Carrega produtos completos de uma NS para Referência
 - **Funções:** 
   - `getNotaSaidaComProdutos(docCod)` - completo
   - `getProdutosNotaSaida(docCod)` - apenas produtos
@@ -67,7 +67,7 @@
 ### 7. **Processar NF Saída**
 - **Endpoint:** `POST /notas-saida/processar`
 - **Prioridade:** ALTA
-- **Motivo:** Finalizar alocação e atualizar estoque
+- **Motivo:** Finalizar Referência e atualizar estoque
 
 ---
 
@@ -106,7 +106,7 @@ api-routes.json (✅ 3/14 URLs preenchidas)
 4. ✅ Sistema carrega **produtos da nota** (rota integrada!)
 5. ⏸️ Sistema busca **Notas de Entrada FIFO** para cada produto (PRÓXIMO)
 6. ⏸️ Usuário aloca volumes das NEs nas NSs
-7. ⏸️ Sistema processa alocação (POST)
+7. ⏸️ Sistema processa Referência (POST)
 
 ---
 
@@ -118,7 +118,7 @@ api-routes.json (✅ 3/14 URLs preenchidas)
 | Páginas funcionais | 1/1 (100%) |
 | Componentes sem mock | 1/2 (50%) |
 | Dados reais em produção | ✅ Sim |
-| Fluxo de alocação | 60% completo |
+| Fluxo de Referência | 60% completo |
 
 ---
 
@@ -144,7 +144,7 @@ Ou algo similar que retorne:
 Isso vai permitir:
 - Exibir produtos disponíveis em cada nota de entrada
 - Implementar matching FIFO entre NS e NE
-- Completar o painel de alocação
+- Completar o painel de Referência
 
 ---
 

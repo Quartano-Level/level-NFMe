@@ -1,8 +1,8 @@
-# Savixx - Frontend de Alocação de Estoque (v2)
+# Savixx - Frontend de Referência de Estoque (v2)
 
 ## 1. Visão Geral do Projeto
 
-Este documento é a fonte da verdade para o desenvolvimento da interface de alocação de estoque da Savixx. O objetivo é criar uma página única e eficiente onde um analista possa selecionar uma Nota Fiscal de Saída (NS) pendente e alocar as quantidades necessárias a partir de Notas Fiscais de Entrada (NE) disponíveis em estoque.
+Este documento é a fonte da verdade para o desenvolvimento da interface de Referência de estoque da Savixx. O objetivo é criar uma página única e eficiente onde um analista possa selecionar uma Nota Fiscal de Saída (NS) pendente e alocar as quantidades necessárias a partir de Notas Fiscais de Entrada (NE) disponíveis em estoque.
 
 - **Framework:** Next.js
 - **Deployment:** Vercel
@@ -15,14 +15,14 @@ Este documento é a fonte da verdade para o desenvolvimento da interface de aloc
 
 ## 2. Fluxo do Usuário
 
-1.  **Acesso e Visualização:** O analista acessa a página e visualiza imediatamente uma tabela com **todas** as Notas de Saída com status "Pendente de Alocação".
+1.  **Acesso e Visualização:** O analista acessa a página e visualiza imediatamente uma tabela com **todas** as Notas de Saída com status "Pendente de Referência".
 2.  **Seleção da Demanda:** O analista clica no botão "Alocar" na linha da NS desejada para iniciar o processo.
-3.  **Tela de Alocação:** A interface exibe a tela de alocação com três seções principais:
+3.  **Tela de Referência:** A interface exibe a tela de Referência com três seções principais:
     * **Painel de Demanda (Topo):** Detalhes da NS selecionada (Produto, Quantidade Total Exigida, Destino).
     * **Painel de Estoque Disponível (Meio):** Uma tabela com todas as NEs disponíveis para aquele produto específico. O usuário pode selecionar as NEs que deseja usar (ex: via checkboxes).
-    * **Painel de Alocação (Abaixo):** Conforme as NEs são selecionadas, elas aparecem nesta área, cada uma com um campo de input para que o analista digite a quantidade a ser alocada daquele lote.
-4.  **Execução da Alocação:** O analista preenche as quantidades nos inputs das NEs selecionadas. Um painel de resumo é atualizado em tempo real.
-5.  **Processamento:** O botão "Processar Alocação" só é **habilitado** quando a `Quantidade Total Alocada` é exatamente igual à `Quantidade Exigida` pela NS.
+    * **Painel de Referência (Abaixo):** Conforme as NEs são selecionadas, elas aparecem nesta área, cada uma com um campo de input para que o analista digite a quantidade a ser alocada daquele lote.
+4.  **Execução da Referência:** O analista preenche as quantidades nos inputs das NEs selecionadas. Um painel de resumo é atualizado em tempo real.
+5.  **Processamento:** O botão "Processar Referência" só é **habilitado** quando a `Quantidade Total Alocada` é exatamente igual à `Quantidade Exigida` pela NS.
 6.  **Confirmação:** Ao clicar no botão, uma requisição é enviada ao backend (n8n). Um estado de "loading" é exibido no botão ou na tela.
 7.  **Feedback e Redirecionamento:**
     * **Sucesso:** Um **modal de sucesso** é exibido. Ao fechar o modal, o usuário é **redirecionado de volta à tela inicial** (a lista de NS pendentes), que agora deve estar atualizada (sem a nota que acabou de ser alocada).
@@ -32,7 +32,7 @@ Este documento é a fonte da verdade para o desenvolvimento da interface de aloc
 
 ## 3. Estrutura da Página e Componentes (`app/alocacao/page.tsx`)
 
-A interface funcionará como uma Single Page Application, com o estado controlando a visualização (lista de NS vs. tela de alocação).
+A interface funcionará como uma Single Page Application, com o estado controlando a visualização (lista de NS vs. tela de Referência).
 
 ```
 
@@ -52,18 +52,18 @@ A interface funcionará como uma Single Page Application, com o estado controlan
 -   **Colunas:** `Número da NS`, `Cliente/Destino`, `Produto`, `Quantidade Exigida`, `Data de Emissão`, `Ação` (Botão "Alocar").
 -   **Lógica:**
     -   Faz a chamada à API `GET http://localhost:5678/webhook-test/2e4eb9ad-667d-4073-b0b3-6f9c2b90aedf?pescod=801`.
-    -   O botão "Alocar" em cada linha chama uma função no componente pai (`page.tsx`) para mudar para a tela de alocação, passando o objeto da NS selecionada.
+    -   O botão "Alocar" em cada linha chama uma função no componente pai (`page.tsx`) para mudar para a tela de Referência, passando o objeto da NS selecionada.
 
-### 3.2. `PainelAlocacaoDetalhada.tsx` (Visualização de Alocação)
+### 3.2. `PainelAlocacaoDetalhada.tsx` (Visualização de Referência)
 
--   **Responsabilidade:** Orquestrar a seleção e alocação de NEs.
+-   **Responsabilidade:** Orquestrar a seleção e Referência de NEs.
 -   **Props:** Recebe o objeto da `notaSaidaSelecionada`.
 -   **Estrutura Interna:**
     1.  **Cabeçalho da Demanda:** Exibe os dados da NS (Produto, Quantidade Exigida).
     2.  **Tabela de NEs Disponíveis:**
         -   Faz a chamada à API `GET http://localhost:5678/webhook-test/359e545e-7939-48e3-82d3-b4370323c39b?product_id={id_do_produto}`.
         -   **Colunas:** `Checkbox de Seleção`, `Número da NE`, `Data de Entrada`, `Quantidade Disponível`.
-    3.  **Área de Alocação (Itens Selecionados):**
+    3.  **Área de Referência (Itens Selecionados):**
         -   Exibe **apenas** as NEs que foram selecionadas na tabela acima.
         -   **Colunas:** `Número da NE`, `Quantidade Disponível`, `Campo de Input: Quantidade a Alocar`.
 -   **Lógica:**
@@ -73,12 +73,12 @@ A interface funcionará como uma Single Page Application, com o estado controlan
 
 ### 3.3. `ResumoAlocacao.tsx`
 
--   **Responsabilidade:** Exibir o progresso da alocação e o botão de ação principal.
+-   **Responsabilidade:** Exibir o progresso da Referência e o botão de ação principal.
 -   **Props:** Recebe `quantidadeExigida`, `quantidadeTotalAlocada`, e a função `onProcessar`.
 -   **Estrutura:**
     -   Texto de status: `Alocado: {quantidadeTotalAlocada} / {quantidadeExigida} ton`.
     -   Uma barra de progresso visual (opcional, mas recomendado).
-    -   Botão `Processar Alocação`:
+    -   Botão `Processar Referência`:
         -   **Estado Desabilitado:** `quantidadeTotalAlocada !== quantidadeExigida`.
         -   **Estado Habilitado:** `quantidadeTotalAlocada === quantidadeExigida` e `quantidadeTotalAlocada > 0`.
         -   Ao ser clicado, chama a função `onProcessar` recebida via props.
@@ -163,7 +163,7 @@ const handleProcessar = async () => {
     ]
     ```
 
-### 5.3. Processamento da Alocação
+### 5.3. Processamento da Referência
 
   - **Status:** **Endpoint a ser definido pelo time de backend.**
   - **Método:** `POST`
@@ -182,7 +182,7 @@ const handleProcessar = async () => {
     ```json
     {
       "status": "sucesso",
-      "mensagem": "Alocação para a NS 12345 processada com sucesso.",
+      "mensagem": "Referência para a NS 12345 processada com sucesso.",
       "transacaoId": "xyz-789"
     }
     ```

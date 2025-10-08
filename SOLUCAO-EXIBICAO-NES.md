@@ -111,7 +111,7 @@ ORDER BY ne.doc_dta_emissao ASC;
 
 ✅ **Frontend corrigido**: Exibe todas as NEs vinculadas  
 ✅ **FIFO mantido**: Ordenação por `docDtaEmissao`  
-✅ **Alocação manual**: Usuário decide quantidades  
+✅ **Referência manual**: Usuário decide quantidades  
 🟡 **Opcional**: Adicionar filtro por `prdCod` no backend se necessário
 
 ---

@@ -128,7 +128,7 @@ transition-expand: 300ms; /* Collapse/Expand */
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │  Notas pendentes                                              │
-│  8 notas prontas para alocação                                │
+│  8 notas prontas para Referência                                │
 ├──────────────────────────────────────────────────────────────┤
 │ NOTA      CLIENTE      VALOR      EMISSÃO    ITENS           │
 ├──────────────────────────────────────────────────────────────┤
@@ -163,7 +163,7 @@ transition-expand: 300ms; /* Collapse/Expand */
 │      Tudo em dia                 │
 │                                   │
 │  Nenhuma nota pendente de        │
-│  alocação no momento.            │
+│  Referência no momento.            │
 │                                   │
 └──────────────────────────────────┘
 ```

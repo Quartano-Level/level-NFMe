@@ -19,16 +19,16 @@ export default function AlocacaoNotaPage() {
   const { data, error, isLoading } = query;
 
   const handleProcessar = async () => {
-    console.log("Processando Alocação:", {
+    console.log("Processando Referência:", {
       notaSaidaId: data?.detalheNota.docCod,
     });
 
     // Simula uma chamada de API
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    // TODO: Integrar com a API de processamento de alocação
+    // TODO: Integrar com a API de processamento de Referência
 
     alert(
-      `Alocação para a NS ${data?.detalheNota.docEspNumero} processada com sucesso!`
+      `Referência para a NS ${data?.detalheNota.docEspNumero} processada com sucesso!`
     );
 
     // Resetar estado e voltar para a lista
@@ -71,7 +71,7 @@ export default function AlocacaoNotaPage() {
             letterSpacing: '-0.02em'
           }}
         >
-          Alocação de Estoque
+          Referência de Estoque
         </Typography>
       </Box>
 

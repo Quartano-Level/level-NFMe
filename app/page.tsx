@@ -18,7 +18,7 @@ export default function HomePage() {
             letterSpacing: '-0.02em'
           }}
         >
-          Alocação de Estoque
+          Referência de Estoque
         </Typography>
       </Box>
 

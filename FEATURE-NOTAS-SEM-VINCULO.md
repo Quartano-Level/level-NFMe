@@ -36,7 +36,7 @@ GET https://savixx-clonex-mp.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684
 
 ### Explicação dos Campos
 
-- **pendentes**: Notas de Saída com vínculos identificados, prontas para alocação FIFO
+- **pendentes**: Notas de Saída com vínculos identificados, prontas para Referência FIFO
 - **sem_vinculo**: Notas de Saída onde as NEs referenciadas no XML não foram encontradas no Conexos
 
 ## 📁 Arquivos Modificados/Criados
@@ -94,7 +94,7 @@ Componente de alerta visual para exibir notas sem vínculo:
 
 ┌─────────────────────────────────────────────────────┐
 │ Notas pendentes                                      │
-│ 8 notas prontas para alocação                        │
+│ 8 notas prontas para Referência                        │
 ├─────────────────────────────────────────────────────┤
 │ NOTA    CLIENTE    VALOR    EMISSÃO   ITENS         │
 │ ────────────────────────────────────────────────    │
@@ -152,7 +152,7 @@ Componente de alerta visual para exibir notas sem vínculo:
 
 ## 🔄 Fluxo de Uso
 
-1. **Usuário acessa página de alocação**
+1. **Usuário acessa página de Referência**
    - Sistema busca notas via `getNotasSaida()`
    - API retorna `pendentes` e `sem_vinculo`
 
@@ -165,7 +165,7 @@ Componente de alerta visual para exibir notas sem vínculo:
 3. **Notas pendentes (com vínculo):**
    - Aparecem na tabela abaixo
    - Usuário pode clicar "Alocar" normalmente
-   - Fluxo de alocação FIFO funciona como antes
+   - Fluxo de Referência FIFO funciona como antes
 
 ## 🚀 Próximos Passos (TODO)
 

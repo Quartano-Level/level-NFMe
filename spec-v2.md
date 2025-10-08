@@ -1,8 +1,8 @@
-# Savixx - Frontend de Alocação de Estoque (v3)
+# Savixx - Frontend de Referência de Estoque (v3)
 
 ## 1. Visão Geral do Projeto
 
-Este documento é a fonte da verdade para o desenvolvimento da interface de alocação de estoque da Savixx. O objetivo é criar uma página única e eficiente onde um analista possa selecionar uma Nota Fiscal de Saída (NS) pendente e alocar as quantidades necessárias a partir de Notas Fiscais de Entrada (NE) disponíveis em estoque.
+Este documento é a fonte da verdade para o desenvolvimento da interface de Referência de estoque da Savixx. O objetivo é criar uma página única e eficiente onde um analista possa selecionar uma Nota Fiscal de Saída (NS) pendente e alocar as quantidades necessárias a partir de Notas Fiscais de Entrada (NE) disponíveis em estoque.
 
 - **Framework:** Next.js
 - **Deployment:** Vercel
@@ -26,20 +26,20 @@ Para permitir o desenvolvimento e a validação completa da interface sem a nece
 A principal mudança é a capacidade de lidar com **múltiplos produtos em uma única Nota de Saída**.
 
 1.  **Acesso e Visualização:** O analista visualiza a tabela de NS. Se uma NS tiver múltiplos produtos, eles serão listados na célula "Produtos".
-2.  **Seleção da Demanda:** Ao clicar em "Alocar", o analista é levado à tela de alocação.
-3.  **Tela de Alocação com Abas:** A interface de alocação agora exibe uma **interface de abas**, onde cada aba corresponde a um produto da Nota de Saída.
-    *   **Painel de Resumo Geral (Topo):** Um painel fixo exibe o progresso **total** da alocação (soma de todos os produtos) e o botão "Processar Alocação".
+2.  **Seleção da Demanda:** Ao clicar em "Alocar", o analista é levado à tela de Referência.
+3.  **Tela de Referência com Abas:** A interface de Referência agora exibe uma **interface de abas**, onde cada aba corresponde a um produto da Nota de Saída.
+    *   **Painel de Resumo Geral (Topo):** Um painel fixo exibe o progresso **total** da Referência (soma de todos os produtos) e o botão "Processar Referência".
     *   **Abas de Produtos:**
-        *   Cada aba contém o fluxo de alocação para um produto específico: detalhes da demanda daquele item, a tabela de estoque disponível para ele, e a área para alocar as quantidades.
-4.  **Execução da Alocação:** O analista navega entre as abas e aloca a quantidade necessária para cada produto.
-5.  **Processamento:** O botão "Processar Alocação" só é **habilitado** quando as quantidades de **todos os produtos** nas abas tiverem sido totalmente alocadas.
+        *   Cada aba contém o fluxo de Referência para um produto específico: detalhes da demanda daquele item, a tabela de estoque disponível para ele, e a área para alocar as quantidades.
+4.  **Execução da Referência:** O analista navega entre as abas e aloca a quantidade necessária para cada produto.
+5.  **Processamento:** O botão "Processar Referência" só é **habilitado** quando as quantidades de **todos os produtos** nas abas tiverem sido totalmente alocadas.
 6.  **Confirmação e Feedback:** (Inalterado)
 
 ---
 
 ## 4. Estrutura da Página e Componentes (`app/alocacao/page.tsx`)
 
-A estrutura de componentes será adaptada para suportar a lógica de abas. O `PainelAlocacaoDetalhada` agora orquestrará as abas e o estado de alocação por produto.
+A estrutura de componentes será adaptada para suportar a lógica de abas. O `PainelAlocacaoDetalhada` agora orquestrará as abas e o estado de Referência por produto.
 
 ---
 
@@ -109,5 +109,5 @@ A estrutura da `NotaSaida` foi atualizada para suportar um array de produtos.
     ]
     ```
 
-### 5.3. Processamento da Alocação
+### 5.3. Processamento da Referência
   - **Simulação:** A função `onProcessar` irá simular uma chamada de API com um `setTimeout`. Após 1.5 segundos, retornará uma resposta de sucesso, acionando o modal de feedback e o redirecionamento para a lista.

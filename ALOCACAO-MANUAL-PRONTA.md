@@ -1,4 +1,4 @@
-# ✅ ALOCAÇÃO MANUAL IMPLEMENTADA
+# ✅ Referência MANUAL IMPLEMENTADA
 
 ## 📦 O que foi feito:
 
@@ -67,7 +67,7 @@ Rename-Item PainelAlocacaoDetalhadaNovo.tsx PainelAlocacaoDetalhada.tsx
    - ✅ Sistema valida: `total alocado ≤ total exigido`
    - ✅ Progresso visual em tempo real
 
-### 4. **Ao clicar "Processar Alocação"**:
+### 4. **Ao clicar "Processar Referência"**:
    - ✅ Gera payload no formato:
      ```json
      {
@@ -115,7 +115,7 @@ O componente tem um **card de debug** no final que mostra:
    2. Clique em "Alocar" em uma NS
    3. Selecione NEs e digite quantidades
    4. Veja o payload no card de debug
-   5. Clique "Processar Alocação"
+   5. Clique "Processar Referência"
 
 ### 4. **Ajuste conforme necessário**:
    - `dprCodSeqEntrada` está fixo em `1` (placeholder)
@@ -136,7 +136,7 @@ O componente tem um **card de debug** no final que mostra:
 ✅ **Loading states** para API calls
 ✅ **Error handling** completo
 ✅ **Debug panel** com JSON do payload
-✅ **Botão desabilitado** até completar alocação
+✅ **Botão desabilitado** até completar Referência
 ✅ **Feedback visual** de sucesso/erro
 
 ---
@@ -147,7 +147,7 @@ O componente tem um **card de debug** no final que mostra:
 |----------------|--------|------|
 | Fonte de dados | Mock hardcoded | API real (`getNotasEntrada()`) |
 | Seleção de NEs | Automática (FIFO) | Manual (usuário escolhe) |
-| Alocação automática | ✅ Sim | ❌ Não (controle total do usuário) |
+| Referência automática | ✅ Sim | ❌ Não (controle total do usuário) |
 | Quantidade | Auto-calculada | Digitada manualmente |
 | POST | Não implementado | ✅ Implementado (`processarAlocacao()`) |
 | Debug | Não tinha | ✅ Card de debug com payload |
@@ -161,14 +161,14 @@ O componente tem um **card de debug** no final que mostra:
 - **NS #46** pede:
   - **Produto A**: 1500 unidades
 
-### Alocação manual:
+### Referência manual:
 1. Usuário vê **9 NEs** ordenadas por data
 2. Marca **NE #1973** (mais antiga)
 3. Digita **1000** unidades
 4. Marca **NE #1980** (segunda mais antiga)
 5. Digita **500** unidades
 6. **Total**: 1500 ✅ (completo!)
-7. Clica **"Processar Alocação"**
+7. Clica **"Processar Referência"**
 
 ### Payload gerado:
 ```json

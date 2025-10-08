@@ -27,6 +27,7 @@ import WarningIcon from "@mui/icons-material/Warning";
 
 import { getNotasEntradaByNotaSaida } from "@/lib/api/notas-entrada";
 import { DetalheNota, NotasEntradaByNotaSaidaData, ProdutoRow } from "@/lib/api/api_info";
+import { formatQuantity } from "@/lib/utils/formatters";
 
 type AlocacaoItem = {
   docCodEntrada: number;
@@ -159,12 +160,12 @@ export function AlocacaoPorProduto({
           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
             <Box>
               <Typography variant="subtitle2" color="text.secondary">Quantidade Exigida</Typography>
-              <Typography variant="h6">{produto.dprQtdQuantidade.toFixed(2)}</Typography>
+              <Typography variant="h6">{formatQuantity(produto.dprQtdQuantidade)}</Typography>
             </Box>
             <Box sx={{ textAlign: "right" }}>
               <Typography variant="subtitle2" color="text.secondary">Quantidade Alocada</Typography>
               <Typography variant="h6" sx={{ fontWeight: "bold" }} color={alocacaoProdutoCompleta ? "success.main" : "text.primary"}>
-                {quantidadeAlocadaProduto.toFixed(2)}
+                {formatQuantity(quantidadeAlocadaProduto)}
                 {alocacaoProdutoCompleta && <CheckCircleIcon sx={{ ml: 1, verticalAlign: "middle" }} color="success" />}
               </Typography>
             </Box>
@@ -177,7 +178,7 @@ export function AlocacaoPorProduto({
 
       {!alocacaoProdutoCompleta && quantidadeAlocadaProduto > 0 && (
         <Alert severity="warning" icon={<WarningIcon />}>
-          Faltam <strong>{(produto.dprQtdQuantidade - quantidadeAlocadaProduto).toFixed(2)}</strong> unidades
+          Faltam <strong>{formatQuantity(produto.dprQtdQuantidade - quantidadeAlocadaProduto)}</strong> unidades
         </Alert>
       )}
 
@@ -240,7 +241,7 @@ export function AlocacaoPorProduto({
                       <TableCell><Typography variant="body2">{detalheNota.dpeNomPessoa || "N/A"}</Typography></TableCell>
                       <TableCell><Typography variant="body2" color="text.secondary">{new Date(detalheNota.docDtaEmissao).toLocaleDateString("pt-BR")}</Typography></TableCell>
                       <TableCell><Chip label={`${detalheNota.qtdItens} itens`} size="small" variant="outlined" /></TableCell>
-                      <TableCell><Typography variant="body2">{produtoFiltrado?.dprQtdQuantidade}</Typography></TableCell>
+                      <TableCell><Typography variant="body2">{formatQuantity(produtoFiltrado?.dprQtdQuantidade ?? 0)}</Typography></TableCell>
                       <TableCell>
                         {isSelected && (
                           <TextField

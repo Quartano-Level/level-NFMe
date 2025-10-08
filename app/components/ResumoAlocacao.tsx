@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import SendIcon from "@mui/icons-material/Send";
+import { formatQuantity } from "@/lib/utils/formatters";
 
 interface ResumoAlocacaoProps {
   titulo?: string;
@@ -27,7 +28,7 @@ interface ResumoAlocacaoProps {
 }
 
 export function ResumoAlocacao({
-  titulo = "Resumo Geral da Alocação",
+  titulo = "Resumo Geral da Referência",
   subheader,
   cliente,
   dataEmissao,
@@ -69,7 +70,7 @@ export function ResumoAlocacao({
               Total Exigido
             </Typography>
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              {totalExigido.toFixed(2)}
+              {formatQuantity(totalExigido)}
             </Typography>
           </Box>
           <Box sx={{ textAlign: { sm: "right" } }}>
@@ -81,7 +82,7 @@ export function ResumoAlocacao({
               color={processarHabilitado ? "success.main" : "text.primary"}
               sx={{ fontWeight: "bold" }}
             >
-              {totalAlocado.toFixed(2)}
+              {formatQuantity(totalAlocado)}
             </Typography>
           </Box>
         </Stack>
@@ -114,7 +115,7 @@ export function ResumoAlocacao({
           startIcon={<SendIcon />}
           size="large"
         >
-          Processar Alocação
+          Processar Referência
         </LoadingButton>
       </CardActions>
     </Card>

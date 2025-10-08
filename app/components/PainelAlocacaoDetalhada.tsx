@@ -163,7 +163,7 @@ export const PainelAlocacaoDetalhada = ({
       const resposta = await processarAlocacao(payload);
       setResultado({
         sucesso: true,
-        mensagem: resposta.message || "Alocação processada com sucesso!",
+        mensagem: resposta.message || "Referência processada com sucesso!",
       });
       onProcessar();
     } catch (error: unknown) {
@@ -171,7 +171,7 @@ export const PainelAlocacaoDetalhada = ({
       setResultado({
         sucesso: false,
         mensagem:
-          error instanceof Error ? error.message : "Erro ao processar alocação",
+          error instanceof Error ? error.message : "Erro ao processar Referência",
       });
     } finally {
       setProcessando(false);

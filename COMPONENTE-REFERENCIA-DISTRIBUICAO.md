@@ -1,8 +1,8 @@
-# 📋 Referência de Distribuição - Componente Sticky
+# 📋 Informações Adicionais DANFE - Componente Sticky
 
 ## 🎯 Objetivo
 
-Exibir as **informações adicionais da Nota de Saída** de forma destacada e sempre visível, servindo como **referência** para o analista entender como o estoque deve ser distribuído durante o processo de alocação.
+Exibir as **informações adicionais da Nota de Saída** de forma destacada e sempre visível, servindo como **referência** para o analista entender como o estoque deve ser distribuído durante o processo de Referência.
 
 ## 🎨 Características do Design
 
@@ -23,7 +23,7 @@ z-index: 100;
 ```
 
 **Como funciona:**
-1. Componente aparece no topo da página de alocação
+1. Componente aparece no topo da página de Referência
 2. Quando usuário faz scroll para baixo, o componente **fixa no topo** (16px do viewport)
 3. Permanece visível enquanto o usuário navega pelas abas de produtos
 4. z-index 100 garante que fica acima dos outros elementos
@@ -82,7 +82,7 @@ Content: padding-left 56px (40px icon + 12px gap + padding)
 │                                     │
 │ [📋 Referência de Distribuição]   │ ← Posição normal
 │                                     │
-│ [Resumo Geral da Alocação]         │
+│ [Resumo Geral da Referência]         │
 │ ...                                 │
 ```
 
@@ -103,7 +103,7 @@ Content: padding-left 56px (40px icon + 12px gap + padding)
 │                                     │
 │ [📋 Referência de Distribuição]   │ ← Volta à posição normal
 │                                     │
-│ [Resumo Geral da Alocação]         │
+│ [Resumo Geral da Referência]         │
 ```
 
 ## 💡 Casos de Uso
@@ -119,7 +119,7 @@ que devem ser alocados da NE #456 prioritariamente."
 ```
 Referência:
 "Cliente exige rastreabilidade completa.
-Documentar todos os lotes utilizados na alocação."
+Documentar todos os lotes utilizados na Referência."
 ```
 
 ### 3. Restrições de Armazenamento

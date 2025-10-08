@@ -4,8 +4,8 @@ import ThemeRegistry from "./ThemeRegistry";
 import { QueryProvider } from "@/lib/providers/QueryProvider";
 
 export const metadata: Metadata = {
-  title: "Savixx - Alocação de Estoque",
-  description: "Interface para alocação de estoque Savixx",
+  title: "Savixx - Referência de Estoque",
+  description: "Interface para Referência de estoque Savixx",
 };
 
 export default function RootLayout({

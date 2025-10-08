@@ -9,7 +9,7 @@ Substituir todos os mocks por integrações reais com a API, tornando o sistema 
 
 ### Páginas Identificadas:
 1. **Página Principal** (`/`) - Dashboard
-2. **Alocação** (`/alocacao`) - Sistema de alocação de produtos
+2. **Referência** (`/alocacao`) - Sistema de Referência de produtos
 
 ### Componentes:
 - `PainelAlocacaoDetalhada.tsx`
@@ -39,7 +39,7 @@ Substituir todos os mocks por integrações reais com a API, tornando o sistema 
 #### 1.3 - Listagem de Notas de Saída
 **Rota:** `GET /notas-saida` ou `GET /notas-saida/front`
 - **Por quê?** Complementa a visualização do fluxo de estoque
-- **Impacto:** Usado na página de alocação (TabelaNotasSaida)
+- **Impacto:** Usado na página de Referência (TabelaNotasSaida)
 - **Complexidade:** Baixa
 - **Dependências:** Produtos
 
@@ -70,20 +70,20 @@ Substituir todos os mocks por integrações reais com a API, tornando o sistema 
 ---
 
 ### **FASE 3: Funcionalidades de Busca e Match**
-*Integrar rotas que facilitam a alocação*
+*Integrar rotas que facilitam a Referência*
 
 #### 3.1 - Match de Notas por Código de Produto
 **Rota:** `GET /notas-entrada/match?prdCod[]=XXX&prdCod[]=YYY`
-- **Por quê?** Essencial para sistema de alocação
+- **Por quê?** Essencial para sistema de Referência
 - **Impacto:** Permite encontrar notas de entrada que contêm produtos específicos
 - **Complexidade:** Média/Alta
 - **Dependências:** Notas de entrada, Produtos
-- **Uso:** Tela de alocação - encontrar de onde alocar
+- **Uso:** Tela de Referência - encontrar de onde alocar
 
-#### 3.2 - Listagem de Notas e Produtos para Alocação
+#### 3.2 - Listagem de Notas e Produtos para Referência
 **Rota:** `GET /alocacao/notas-produtos`
-- **Por quê?** Específico para a tela de alocação
-- **Impacto:** Painel de alocação detalhada
+- **Por quê?** Específico para a tela de Referência
+- **Impacto:** Painel de Referência detalhada
 - **Complexidade:** Média
 - **Dependências:** Todas as rotas anteriores
 
@@ -118,9 +118,9 @@ Substituir todos os mocks por integrações reais com a API, tornando o sistema 
 - **Complexidade:** Alta
 - **Dependências:** Todas as anteriores
 
-#### 5.2 - Processar NF Saída com Base em Entrada (ALOCAÇÃO AUTOMÁTICA)
+#### 5.2 - Processar NF Saída com Base em Entrada (Referência AUTOMÁTICA)
 **Rota:** `POST /notas-saida/processar-com-entrada`
-- **Por quê?** Alocação automática - coração do sistema
+- **Por quê?** Referência automática - coração do sistema
 - **Impacto:** Principal diferencial do sistema
 - **Complexidade:** Muito Alta
 - **Dependências:** Todas as rotas anteriores
@@ -176,7 +176,7 @@ lib/
     produtos.ts        # Funções relacionadas a produtos
     notas-entrada.ts   # Funções de notas de entrada
     notas-saida.ts     # Funções de notas de saída
-    alocacao.ts        # Funções de alocação
+    alocacao.ts        # Funções de Referência
     xml.ts             # Funções de processamento XML
   types/
     api.ts             # Tipos de request/response
