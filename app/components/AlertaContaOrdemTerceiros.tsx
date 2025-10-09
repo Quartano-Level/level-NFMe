@@ -1,23 +1,30 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Collapse, IconButton, Paper, Typography } from '@mui/material';
+import { Box, Collapse, IconButton, Paper, Typography, Button } from '@mui/material';
 import { 
   ExpandMore as ExpandMoreIcon,
-  Error as ErrorIcon
+  ErrorOutline as ErrorOutlineIcon,
+  OpenInNew as OpenInNewIcon
 } from '@mui/icons-material';
 import type { DetalheNota } from '@/lib/api/api_info';
+import { formatCurrency } from '@/lib/utils/formatters';
 
-interface AlertaNotasSemVinculoProps {
+interface AlertaContaOrdemTerceirosProps {
   notas: DetalheNota[];
 }
 
-export default function AlertaNotasSemVinculo({ notas }: AlertaNotasSemVinculoProps) {
+export default function AlertaContaOrdemTerceiros({ notas }: AlertaContaOrdemTerceirosProps) {
   const [expanded, setExpanded] = useState(false);
 
   if (!notas || notas.length === 0) {
     return null;
   }
+
+  const abrirNoConexos = (numeroNota: string) => {
+    const url = `https://savixx.conexos.cloud/com297#/?pageNumber=1&pageSize=20&searchOnLoad=true&orderBy=desc&sortBy=docCod&docEspNumero!LIKE=${encodeURIComponent(numeroNota)}&vldStatus!IN=1&vldStatus!IN=2&vldStatus!IN=3&vldStatus!IN=7`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <Paper 
@@ -65,7 +72,7 @@ export default function AlertaNotasSemVinculo({ notas }: AlertaNotasSemVinculoPr
               transform: expanded ? 'scale(1.05)' : 'scale(1)'
             }}
           >
-            <ErrorIcon sx={{ color: '#ff3b30', fontSize: 24 }} />
+            <ErrorOutlineIcon sx={{ color: '#1d1d1f', fontSize: 24 }} />
           </Box>
           
           <Box>
@@ -78,7 +85,7 @@ export default function AlertaNotasSemVinculo({ notas }: AlertaNotasSemVinculoPr
                 letterSpacing: '-0.01em'
               }}
             >
-              Notas sem vínculo
+              Remessa por conta e ordem de terceiros
             </Typography>
             <Typography 
               variant="body2" 
@@ -88,7 +95,7 @@ export default function AlertaNotasSemVinculo({ notas }: AlertaNotasSemVinculoPr
                 mt: 0.25
               }}
             >
-              {notas.length} {notas.length === 1 ? 'nota não encontrada' : 'notas não encontradas'} no Conexos
+              {notas.length} {notas.length === 1 ? 'nota pronta' : 'notas prontas'} para finalização
             </Typography>
           </Box>
         </Box>
@@ -116,8 +123,8 @@ export default function AlertaNotasSemVinculo({ notas }: AlertaNotasSemVinculoPr
               lineHeight: 1.5
             }}
           >
-            As notas abaixo referenciam NEs que não foram encontradas no sistema Conexos.
-            Verifique os registros para entender a origem da inconsistência.
+            Notas de saída classificadas como remessa por conta e ordem de terceiros.
+            Estas operações seguem regime especial de tributação.
           </Typography>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -184,28 +191,37 @@ export default function AlertaNotasSemVinculo({ notas }: AlertaNotasSemVinculoPr
                         display: 'block'
                       }}
                     >
-                      NF {nota.fisNumDocumento} • Série {nota.espSerie} • {new Date(nota.docDtaEmissao).toLocaleDateString('pt-BR')}
+                      {formatCurrency(nota.docMnyValor)} • {nota.qtdItens || 0} {nota.qtdItens === 1 ? 'item' : 'itens'} • {new Date(nota.docDtaEmissao).toLocaleDateString('pt-BR')}
                     </Typography>
                   </Box>
 
-                  <Box
+                  <Button
+                    variant="contained"
+                    size="small"
+                    endIcon={<OpenInNewIcon sx={{ fontSize: '16px !important' }} />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      abrirNoConexos(nota.docEspNumero || `${nota.docCod}`);
+                    }}
                     sx={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      minWidth: 32,
-                      height: 24,
-                      borderRadius: '6px',
-                      backgroundColor: '#f0f0f0',
-                      px: 1.5,
+                      backgroundColor: '#1d1d1f',
+                      color: '#fff',
+                      textTransform: 'none',
+                      fontWeight: 600,
                       fontSize: '0.8125rem',
-                      fontWeight: 500,
-                      color: '#86868b',
-                      whiteSpace: 'nowrap'
+                      borderRadius: '6px',
+                      px: 2,
+                      py: 0.75,
+                      boxShadow: 'none',
+                      minWidth: '110px',
+                      '&:hover': {
+                        backgroundColor: '#2c2c2e',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
+                      }
                     }}
                   >
-                    {nota.qtdItens || 0} {nota.qtdItens === 1 ? 'item' : 'itens'}
-                  </Box>
+                    Ver no Conexos
+                  </Button>
                 </Box>
               </Box>
             ))}

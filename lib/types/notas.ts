@@ -76,11 +76,12 @@ export interface ListaNotasSaidaResponse {
 }
 
 /**
- * Response da API listFront - separada em pendentes e sem_vinculo
+ * Response da API listFront - separada em pendentes, sem_vinculo e conta_e_ordem_terceiros
  */
 export interface ListaNotasSaidaComVinculoResponse {
   pendentes: ListaNotasSaidaResponse;
   sem_vinculo: ListaNotasSaidaResponse;
+  conta_e_ordem_terceiros: ListaNotasSaidaResponse | null;
 }
 
 export interface NotaEntrada {

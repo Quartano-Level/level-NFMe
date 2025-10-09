@@ -46,3 +46,44 @@ export async function getNotaSaidaDetalhada(docCod: number): Promise<DetailNotaS
     throw error;
   }
 }
+
+/**
+ * Response da finalização de nota de saída
+ */
+export interface FinalizarNotaResponse {
+  success: boolean;
+  message: string;
+  [key: string]: unknown; // Permitir campos adicionais da API
+}
+
+/**
+ * Finaliza uma nota de saída de conta e ordem de terceiros
+ */
+export async function finalizarNotaSaida(docCodSaida: number): Promise<FinalizarNotaResponse> {
+  try {
+    const endpoint = urls.finalizarNotaSaida;
+    
+    console.log('[API] Finalizando nota de saída:', docCodSaida);
+    
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ docCodSaida }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro HTTP: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    
+    console.log('[API] ✅ Nota finalizada com sucesso:', data);
+
+    return data;
+  } catch (error) {
+    console.error('[API] ❌ Erro ao finalizar nota de saída:', error);
+    throw error;
+  }
+}

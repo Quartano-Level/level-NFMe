@@ -18,15 +18,18 @@ import {
   AlertTitle,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { getNotasSaida } from "@/lib/api/notas-saida";
+import { getNotasSaida, finalizarNotaSaida } from "@/lib/api/notas-saida";
 import { coletarXMLsSharePoint } from "@/lib/api/sharepoint";
 import { useQuery } from "@tanstack/react-query";
 import AlertaNotasSemVinculo from "./AlertaNotasSemVinculo";
+import AlertaContaOrdemTerceiros from "./AlertaContaOrdemTerceiros";
 import { formatCurrency } from "@/lib/utils/formatters";
 
 export const TabelaNotasSaida = () => {
   const [coletando, setColetando] = useState(false);
   const [resultado, setResultado] = useState<{ sucesso: boolean; mensagem: string } | null>(null);
+  const [finalizando, setFinalizando] = useState<number | null>(null); // docCod da nota sendo finalizada
+  const [resultadoFinalizacao, setResultadoFinalizacao] = useState<{ sucesso: boolean; mensagem: string; docCod: number } | null>(null);
 
   const query = useQuery({
     queryKey: ['notasSaidaPendentes'],
@@ -66,6 +69,39 @@ export const TabelaNotasSaida = () => {
     }
   };
 
+  const handleFinalizarNota = async (docCodSaida: number) => {
+    try {
+      setFinalizando(docCodSaida);
+      setResultadoFinalizacao(null);
+      
+      console.log('[TabelaNotasSaida] ✓ Finalizando nota de conta e ordem:', docCodSaida);
+      
+      await finalizarNotaSaida(docCodSaida);
+      
+      setResultadoFinalizacao({ 
+        sucesso: true, 
+        mensagem: 'Nota finalizada com sucesso! Atualizando lista...', 
+        docCod: docCodSaida 
+      });
+      
+      // Aguarda 1 segundo para mostrar a mensagem de sucesso
+      setTimeout(async () => {
+        await refetch();
+        setResultadoFinalizacao(null);
+        setFinalizando(null);
+      }, 1500);
+      
+    } catch (err) {
+      console.error('[TabelaNotasSaida] ❌ Erro ao finalizar nota:', err);
+      setResultadoFinalizacao({ 
+        sucesso: false, 
+        mensagem: 'Erro ao finalizar a nota de saída', 
+        docCod: docCodSaida 
+      });
+      setFinalizando(null);
+    }
+  };
+
   if (isLoading)
     return (
       <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
@@ -83,8 +119,10 @@ export const TabelaNotasSaida = () => {
 
   const notasPendentes = data?.pendentes?.rows || [];
   const notasSemVinculo = data?.sem_vinculo?.rows || [];
+  const notasContaOrdemTerceiros = data?.conta_e_ordem_terceiros?.rows || [];
   const totalPendentes = data?.pendentes?.count || 0;
   const totalSemVinculo = data?.sem_vinculo?.count || 0;
+  const totalContaOrdemTerceiros = data?.conta_e_ordem_terceiros?.count || 0;
 
   // Renderiza alertas e botão de atualização sempre
   const renderHeader = () => (
@@ -105,6 +143,26 @@ export const TabelaNotasSaida = () => {
           </AlertTitle>
           <Typography sx={{ fontSize: '0.9375rem', color: '#1d1d1f' }}>
             {resultado.mensagem}
+          </Typography>
+        </Alert>
+      )}
+
+      {/* Alerta de resultado da finalização */}
+      {resultadoFinalizacao && (
+        <Alert 
+          severity={resultadoFinalizacao.sucesso ? "success" : "error"}
+          sx={{ 
+            mb: 3,
+            border: `1px solid ${resultadoFinalizacao.sucesso ? '#34c759' : '#ff3b30'}`,
+            borderRadius: '12px',
+            backgroundColor: resultadoFinalizacao.sucesso ? '#f0fdf4' : '#fff5f5'
+          }}
+        >
+          <AlertTitle sx={{ fontWeight: 600, color: '#1d1d1f' }}>
+            {resultadoFinalizacao.sucesso ? 'Sucesso!' : 'Erro'}
+          </AlertTitle>
+          <Typography sx={{ fontSize: '0.9375rem', color: '#1d1d1f' }}>
+            {resultadoFinalizacao.mensagem}
           </Typography>
         </Alert>
       )}
@@ -142,7 +200,7 @@ export const TabelaNotasSaida = () => {
     </Box>
   );
 
-  if (totalPendentes === 0 && totalSemVinculo === 0) {
+  if (totalPendentes === 0 && totalSemVinculo === 0 && totalContaOrdemTerceiros === 0) {
     return (
       <Box>
         {renderHeader()}
@@ -204,6 +262,11 @@ export const TabelaNotasSaida = () => {
       {/* Alerta para notas SEM vínculo - Monochrome */}
       {notasSemVinculo.length > 0 && (
         <AlertaNotasSemVinculo notas={notasSemVinculo} />
+      )}
+
+      {/* Alerta para notas de CONTA E ORDEM DE TERCEIROS - Monochrome */}
+      {notasContaOrdemTerceiros.length > 0 && (
+        <AlertaContaOrdemTerceiros notas={notasContaOrdemTerceiros} />
       )}
 
       {/* Tabela de notas PENDENTES - Estilo Apple */}

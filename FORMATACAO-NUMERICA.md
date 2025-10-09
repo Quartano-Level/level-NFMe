@@ -63,6 +63,27 @@ formatPercent(value: number): string
   - **Depois**: `{formatQuantity(produtoFiltrado?.dprQtdQuantidade ?? 0)}`
   - **Formato**: 1.234,50
 
+- **Linhas ~109-119**: Helper Functions para Input Brasileiro
+  ```tsx
+  const parseNumberBR = (value: string): number => {
+    if (!value || value.trim() === '') return 0;
+    const normalized = value.replace(/\./g, '').replace(',', '.');
+    const parsed = parseFloat(normalized);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  const formatInputValue = (value: number): string => {
+    if (value === 0) return '';
+    return value.toString().replace('.', ',');
+  };
+  ```
+
+- **Linhas ~263-266**: TextField com Formatação Brasileira no Input
+  - **Antes**: `type="number"`, `value={selectedItem?.quantidade || 0}`, `onChange={parseFloat(e.target.value)}`
+  - **Depois**: `type="text"`, `value={formatInputValue(selectedItem?.quantidade || 0)}`, `onChange={parseNumberBR(e.target.value)}`
+  - **Formato de Input**: Aceita `123,45` (vírgula como decimal)
+  - **Armazenamento**: Converte para `123.45` (ponto como decimal)
+
 ## Verificação de Cálculos
 
 Os cálculos internos (não exibidos ao usuário) **não foram alterados**:
@@ -85,15 +106,33 @@ Apenas a **exibição visual** foi formatada para o padrão brasileiro.
 ## Status
 
 ✅ **CONCLUÍDO** - Todos os números exibidos ao usuário seguem o padrão brasileiro (pt-BR).
+✅ **CONCLUÍDO** - Campos de entrada (input) aceitam vírgula como separador decimal.
+
+**Total de localizações atualizadas: 8**
+- **Display**: 7 locais (valores monetários + quantidades)
+- **Input**: 1 local (campo de quantidade a alocar)
 
 ## Testes Recomendados
 
-1. Verificar lista de notas (valores em R$)
-2. Verificar resumo de alocação (quantidades)
-3. Verificar alocação por produto (quantidades exigidas/alocadas)
-4. Verificar alertas de quantidade faltante
-5. Verificar tabela de notas de entrada disponíveis
+### Display (Exibição)
+1. ✅ Verificar lista de notas (valores em R$)
+2. ✅ Verificar resumo de alocação (quantidades)
+3. ✅ Verificar alocação por produto (quantidades exigidas/alocadas)
+4. ✅ Verificar alertas de quantidade faltante
+5. ✅ Verificar tabela de notas de entrada disponíveis
 
 Todos devem mostrar:
 - `.` para milhar (ex: 1.234)
 - `,` para decimal (ex: 56,78)
+
+### Input (Entrada de Dados)
+6. ✅ Digitar quantidade com vírgula: `123,45`
+7. ✅ Verificar conversão interna: `123.45`
+8. ✅ Testar valores sem parte decimal: `100`
+9. ✅ Testar valores com milhares: `1.234,56` ou `1234,56`
+10. ✅ Campo vazio deve ser tratado como `0`
+
+**Comportamento esperado:**
+- Usuário digita: `123,45`
+- Sistema armazena: `123.45`
+- Display mostra: `123,45`

@@ -124,6 +124,21 @@ export function AlocacaoPorProduto({
     onQuantidadeChange(docCodEntrada, valorFinal);
   };
 
+  // Helper functions for Brazilian number formatting in input
+  const parseNumberBR = (value: string): number => {
+    if (!value || value.trim() === '') return 0;
+    // Remove dots (thousand separator) and replace comma with dot (decimal separator)
+    const normalized = value.replace(/\./g, '').replace(',', '.');
+    const parsed = parseFloat(normalized);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  const formatInputValue = (value: number): string => {
+    if (value === 0) return '';
+    // Convert number to string with comma as decimal separator
+    return value.toString().replace('.', ',');
+  };
+
   if (isLoadingNes) {
     return (
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 4 }}>
@@ -245,12 +260,12 @@ export function AlocacaoPorProduto({
                       <TableCell>
                         {isSelected && (
                           <TextField
-                            type="number"
+                            type="text"
                             size="small"
                             variant="outlined"
-                            value={selectedItem?.quantidade || 0} // TODO: Verificar se é a quantidade correta
-                            onChange={(e) => handleQuantidadeChangeLocal(detalheNota.docCod, parseFloat(e.target.value) || 0)}
-                            InputProps={{ inputProps: { min: 0, step: 0.01 } }}
+                            value={formatInputValue(selectedItem?.quantidade || 0)}
+                            onChange={(e) => handleQuantidadeChangeLocal(detalheNota.docCod, parseNumberBR(e.target.value))}
+                            placeholder="0,00"
                             sx={{ width: "150px" }}
                           />
                         )}

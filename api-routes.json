@@ -60,6 +60,15 @@
         "params": [],
         "response": "Resultado da coleta e processamento dos XMLs"
       },
+      "finalizarNotaSaida": {
+        "method": "POST",
+        "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/60b0b79c-40aa-4aea-bffc-706ac84897b3",
+        "description": "Finaliza uma nota de saída de conta e ordem de terceiros",
+        "body": {
+          "docCodSaida": "number"
+        },
+        "response": "Confirmação da finalização da nota de saída"
+      },
       "getDetail": {
         "method": "GET",
         "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/f1eb8724-fbf9-4aab-a43b-c6176485af92",

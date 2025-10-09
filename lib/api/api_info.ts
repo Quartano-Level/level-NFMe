@@ -9,6 +9,8 @@ export const urls = {
     "https://savixx-clonex-mp.app.n8n.cloud/webhook/6ce267f3-3048-4ed9-994b-16ba1567b7ef",
   coletarXMLsSharePoint:
     "https://savixx-clonex-mp.app.n8n.cloud/webhook/97b0db9a-5fe3-43cb-ac07-ad3055f041ed",
+  finalizarNotaSaida:
+    "https://savixx-clonex-mp.app.n8n.cloud/webhook/60b0b79c-40aa-4aea-bffc-706ac84897b3",
 };
 
 export interface ListagemNotasSaidaResponse {
@@ -18,11 +20,12 @@ export interface ListagemNotasSaidaResponse {
 }
 
 /**
- * Response da listFront - retorna pendentes E sem_vinculo
+ * Response da listFront - retorna pendentes, sem_vinculo e conta_e_ordem_terceiros
  */
 export interface ListagemNotasSaidaComVinculoResponse {
   pendentes: ListagemNotasSaidaResponse;
   sem_vinculo: ListagemNotasSaidaResponse;
+  conta_e_ordem_terceiros: ListagemNotasSaidaResponse | null;
 }
 
 export interface DetailNotaSaidaResponse {
