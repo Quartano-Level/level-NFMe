@@ -8,7 +8,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Button,
   IconButton,
   TextField,
@@ -52,12 +51,6 @@ export default function TabelaDeparaFornecedor({
   isUpdating,
   isDeleting,
 }: TabelaDeparaFornecedorProps) {
-  console.log('[TabelaDeparaFornecedor] Componente renderizado com:', { 
-    dataLength: data?.length, 
-    hasData: !!data && data.length > 0,
-    columns: data && data.length > 0 ? Object.keys(data[0]) : []
-  });
-
   const [editingRow, setEditingRow] = useState<EditingRow | null>(null);
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [newRowDialog, setNewRowDialog] = useState(false);
@@ -65,36 +58,27 @@ export default function TabelaDeparaFornecedor({
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [rowsToDelete, setRowsToDelete] = useState<(number | string)[]>([]);
 
-  // Obter todas as chaves únicas de todas as linhas para criar as colunas
-  // Excluir 'id' da lista de colunas exibidas
   const columns = useMemo(() => {
     if (!data || data.length === 0) {
-      console.log('[TabelaDeparaFornecedor] useMemo: Sem dados, retornando colunas vazias');
       return [];
     }
 
     const allKeys = new Set<string>();
     data.forEach((row) => {
-      if (row && typeof row === 'object') {
+      if (row && typeof row === "object") {
         Object.keys(row).forEach((key) => {
-          // Excluir 'id' das colunas exibidas
-          if (key !== 'id') {
+          if (key !== "id") {
             allKeys.add(key);
           }
         });
       }
     });
 
-    // Ordenar colunas em ordem alfabética
-    const sortedKeys = Array.from(allKeys).sort();
-    
-    console.log('[TabelaDeparaFornecedor] useMemo: Colunas calculadas (sem id):', sortedKeys);
-    return sortedKeys;
+    return Array.from(allKeys).sort();
   }, [data]);
 
-  // Identificar qual campo é o ID (geralmente 'id' ou o primeiro campo)
   const getIdField = (row: DeparaFornecedorRow): string | number | undefined => {
-    return row.id ?? row[columns[0]] ?? undefined;
+    return row.id;
   };
 
   const handleEdit = (index: number) => {
@@ -135,7 +119,6 @@ export default function TabelaDeparaFornecedor({
   };
 
   const handleCreateNewRow = () => {
-    // Remover campo 'id' se existir antes de criar
     const { id, ...dataWithoutId } = newRowData;
     onCreate(dataWithoutId);
     setNewRowData({});
@@ -186,9 +169,7 @@ export default function TabelaDeparaFornecedor({
     }
   };
 
-  // Verificar se há dados
   if (!data || data.length === 0) {
-    console.log('[TabelaDeparaFornecedor] Sem dados, renderizando mensagem vazia');
     return (
       <Box textAlign="center" py={4}>
         <Typography variant="body1" color="text.secondary" gutterBottom>
@@ -205,8 +186,6 @@ export default function TabelaDeparaFornecedor({
       </Box>
     );
   }
-
-  console.log('[TabelaDeparaFornecedor] Renderizando tabela com', data.length, 'registros e', columns.length, 'colunas');
 
   return (
     <Box>
@@ -271,28 +250,23 @@ export default function TabelaDeparaFornecedor({
                       onChange={() => handleToggleSelectRow(index)}
                     />
                   </TableCell>
-                  {columns.map((column) => {
-                    // Não permitir edição do campo 'id'
-                    const isIdField = column === 'id';
-                    
-                    return (
-                      <TableCell key={column}>
-                        {isEditing && !isIdField ? (
-                          <TextField
-                            size="small"
-                            fullWidth
-                            value={editingRow.data[column] ?? ""}
-                            onChange={(e) => handleFieldChange(column, e.target.value)}
-                            variant="outlined"
-                          />
-                        ) : (
-                          <Typography variant="body2">
-                            {String(row[column] ?? "")}
-                          </Typography>
-                        )}
-                      </TableCell>
-                    );
-                  })}
+                  {columns.map((column) => (
+                    <TableCell key={column}>
+                      {isEditing ? (
+                        <TextField
+                          size="small"
+                          fullWidth
+                          value={editingRow.data[column] ?? ""}
+                          onChange={(e) => handleFieldChange(column, e.target.value)}
+                          variant="outlined"
+                        />
+                      ) : (
+                        <Typography variant="body2">
+                          {String(row[column] ?? "")}
+                        </Typography>
+                      )}
+                    </TableCell>
+                  ))}
                   <TableCell align="right">
                     {isEditing ? (
                       <Box display="flex" gap={1} justifyContent="flex-end">
@@ -347,7 +321,6 @@ export default function TabelaDeparaFornecedor({
         </Table>
       </TableContainer>
 
-      {/* Dialog para adicionar nova linha */}
       <Dialog
         open={newRowDialog}
         onClose={() => setNewRowDialog(false)}
@@ -357,22 +330,17 @@ export default function TabelaDeparaFornecedor({
         <DialogTitle>Adicionar Nova Linha</DialogTitle>
         <DialogContent>
           <Box display="flex" flexDirection="column" gap={2} pt={2}>
-            {columns.map((column) => {
-              // Não exibir campo 'id' no formulário de adicionar
-              if (column === 'id') return null;
-              
-              return (
-                <TextField
-                  key={column}
-                  label={column}
-                  fullWidth
-                  value={String(newRowData[column] ?? "")}
-                  onChange={(e) => handleNewRowFieldChange(column, e.target.value)}
-                  variant="outlined"
-                  size="small"
-                />
-              );
-            })}
+            {columns.map((column) => (
+              <TextField
+                key={column}
+                label={column}
+                fullWidth
+                value={String(newRowData[column] ?? "")}
+                onChange={(e) => handleNewRowFieldChange(column, e.target.value)}
+                variant="outlined"
+                size="small"
+              />
+            ))}
           </Box>
         </DialogContent>
         <DialogActions>
@@ -388,7 +356,6 @@ export default function TabelaDeparaFornecedor({
         </DialogActions>
       </Dialog>
 
-      {/* Dialog de confirmação de exclusão */}
       <Dialog open={deleteDialog} onClose={() => setDeleteDialog(false)}>
         <DialogTitle>Confirmar Exclusão</DialogTitle>
         <DialogContent>
@@ -412,4 +379,3 @@ export default function TabelaDeparaFornecedor({
     </Box>
   );
 }
-
