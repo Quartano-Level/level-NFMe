@@ -120,6 +120,7 @@ export default function TabelaDeparaFornecedor({
   };
 
   const handleCreateNewRow = () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...dataWithoutId } = newRowData;
     onCreate(dataWithoutId);
     setNewRowData({});
