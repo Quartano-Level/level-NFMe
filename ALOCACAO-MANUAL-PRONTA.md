@@ -105,7 +105,7 @@ O componente tem um **card de debug** no final que mostra:
    ```json
    "alocacao": {
      "processar": {
-       "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/SEU-ID-AQUI"
+       "endpoint": "https://level-nfse.app.n8n.cloud/webhook/SEU-ID-AQUI"
      }
    }
    ```

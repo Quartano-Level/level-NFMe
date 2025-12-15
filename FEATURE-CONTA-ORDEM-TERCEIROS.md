@@ -45,7 +45,7 @@ A API de listagem de notas (`getNotasSaida`) retorna três categorias:
 
 ### 1. **API - Endpoint de Finalização**
 
-**URL:** `https://savixx-clonex-mp.app.n8n.cloud/webhook/60b0b79c-40aa-4aea-bffc-706ac84897b3`
+**URL:** `https://level-nfse.app.n8n.cloud/webhook/60b0b79c-40aa-4aea-bffc-706ac84897b3`
 
 **Method:** `POST`
 
@@ -77,7 +77,7 @@ Registrado novo endpoint `finalizarNotaSaida`:
 ```json
 {
   "method": "POST",
-  "endpoint": "https://savixx-clonex-mp.app.n8n.cloud/webhook/60b0b79c-40aa-4aea-bffc-706ac84897b3",
+  "endpoint": "https://level-nfse.app.n8n.cloud/webhook/60b0b79c-40aa-4aea-bffc-706ac84897b3",
   "description": "Finaliza uma nota de saída de conta e ordem de terceiros",
   "body": {
     "docCodSaida": "number"
@@ -101,7 +101,7 @@ Adicionado URL de finalização:
 export const urls = {
   // ... outros URLs
   finalizarNotaSaida:
-    "https://savixx-clonex-mp.app.n8n.cloud/webhook/60b0b79c-40aa-4aea-bffc-706ac84897b3",
+    "https://level-nfse.app.n8n.cloud/webhook/60b0b79c-40aa-4aea-bffc-706ac84897b3",
 };
 ```
 

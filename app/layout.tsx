@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ThemeRegistry from "./ThemeRegistry";
 import { QueryProvider } from "@/lib/providers/QueryProvider";
+import Sidebar from "./components/Sidebar";
+import { Box } from "@mui/material";
 
 export const metadata: Metadata = {
   title: "Savixx - Referência de Estoque",
@@ -17,7 +19,21 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body>
         <QueryProvider>
-          <ThemeRegistry>{children}</ThemeRegistry>
+          <ThemeRegistry>
+            <Box sx={{ display: "flex", minHeight: "100vh", width: "100%" }}>
+              <Sidebar />
+              <Box
+                component="main"
+                sx={{
+                  flexGrow: 1,
+                  width: "100%",
+                  overflow: "auto",
+                }}
+              >
+                {children}
+              </Box>
+            </Box>
+          </ThemeRegistry>
         </QueryProvider>
       </body>
     </html>

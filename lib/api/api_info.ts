@@ -1,16 +1,18 @@
 export const urls = {
   listagemNotasSaida:
-    "https://savixx-clonex-mp.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cded?filCod=10&pageNumber=",
+    "https://level-nfse.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cded?filCod=13&pageNumber=",
   detailNotaSaida:
-    "https://savixx-clonex-mp.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cdey",
+    "https://level-nfse.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cdey",
   getNotasEntradaByNotaSaida:
-    "https://savixx-clonex-mp.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cdes",
+    "https://level-nfse.app.n8n.cloud/webhook/06ce0737-0d9d-4a7c-b050-b2684913cdes",
   processarAlocacao:
-    "https://savixx-clonex-mp.app.n8n.cloud/webhook/6ce267f3-3048-4ed9-994b-16ba1567b7ef",
+    "https://level-nfse.app.n8n.cloud/webhook/6ce267f3-3048-4ed9-994b-16ba1567b7ef",
   coletarXMLsSharePoint:
-    "https://savixx-clonex-mp.app.n8n.cloud/webhook/97b0db9a-5fe3-43cb-ac07-ad3055f041ed",
+    "https://level-nfse.app.n8n.cloud/webhook/97b0db9a-5fe3-43cb-ac07-ad3055f041ed",
   finalizarNotaSaida:
-    "https://savixx-clonex-mp.app.n8n.cloud/webhook/60b0b79c-40aa-4aea-bffc-706ac84897b3",
+    "https://level-nfse.app.n8n.cloud/webhook/60b0b79c-40aa-4aea-bffc-706ac84897b3",
+  deparaFornecedorProcesso:
+    "https://level-nfse.app.n8n.cloud/webhook/depara-fornecedor-processo",
 };
 
 export interface ListagemNotasSaidaResponse {
