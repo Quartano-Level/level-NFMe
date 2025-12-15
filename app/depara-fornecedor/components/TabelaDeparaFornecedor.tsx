@@ -26,6 +26,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { DeparaFornecedorRow } from "@/lib/api/depara-fornecedor";
+import { formatColumnName } from "@/lib/utils/formatters";
 
 interface TabelaDeparaFornecedorProps {
   data: DeparaFornecedorRow[];
@@ -230,7 +231,7 @@ export default function TabelaDeparaFornecedor({
               {columns.map((column) => (
                 <TableCell key={column}>
                   <Typography variant="subtitle2" fontWeight="bold">
-                    {column}
+                    {formatColumnName(column)}
                   </Typography>
                 </TableCell>
               ))}
@@ -333,7 +334,7 @@ export default function TabelaDeparaFornecedor({
             {columns.map((column) => (
               <TextField
                 key={column}
-                label={column}
+                label={formatColumnName(column)}
                 fullWidth
                 value={String(newRowData[column] ?? "")}
                 onChange={(e) => handleNewRowFieldChange(column, e.target.value)}

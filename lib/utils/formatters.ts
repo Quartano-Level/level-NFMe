@@ -47,3 +47,24 @@ export function formatQuantity(value: number): string {
 export function formatPercent(value: number): string {
   return `${formatNumber(value, 2)}%`;
 }
+
+/**
+ * Formata o nome de uma coluna para exibição formal
+ * Remove underscores, adiciona espaços e capitaliza cada palavra
+ * @param columnName - Nome da coluna (ex: "nome_fornecedor")
+ * @returns Nome formatado para exibição (ex: "Nome Fornecedor")
+ * 
+ * @example
+ * formatColumnName("nome_fornecedor") // "Nome Fornecedor"
+ * formatColumnName("codigo_produto") // "Codigo Produto"
+ * formatColumnName("data_criacao") // "Data Criacao"
+ */
+export function formatColumnName(columnName: string): string {
+  return columnName
+    .split('_')
+    .map(word => {
+      // Capitaliza a primeira letra e mantém o resto em minúsculas
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(' ');
+}
