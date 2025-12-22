@@ -28,6 +28,8 @@ import { formatCurrency } from "@/lib/utils/formatters";
 export const TabelaNotasSaida = () => {
   const [coletando, setColetando] = useState(false);
   const [resultado, setResultado] = useState<{ sucesso: boolean; mensagem: string } | null>(null);
+  // Variáveis para funcionalidade de finalização de notas (implementação futura)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [finalizando, setFinalizando] = useState<number | null>(null); // docCod da nota sendo finalizada
   const [resultadoFinalizacao, setResultadoFinalizacao] = useState<{ sucesso: boolean; mensagem: string; docCod: number } | null>(null);
 
@@ -69,6 +71,8 @@ export const TabelaNotasSaida = () => {
     }
   };
 
+  // Função para finalização de notas (será conectada à UI futuramente)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleFinalizarNota = async (docCodSaida: number) => {
     try {
       setFinalizando(docCodSaida);

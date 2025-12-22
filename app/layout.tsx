@@ -20,7 +20,7 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <ThemeRegistry>
-            <Box sx={{ display: "flex", minHeight: "100vh", width: "100%" }}>
+            <Box sx={{ display: "flex", minHeight: "100vh", width: "100%", overflowX: "hidden" }}>
               <Sidebar />
               <Box
                 component="main"
@@ -28,6 +28,8 @@ export default function RootLayout({
                   flexGrow: 1,
                   width: "100%",
                   overflow: "auto",
+                  overflowX: "hidden",
+                  minWidth: 0,
                 }}
               >
                 {children}
