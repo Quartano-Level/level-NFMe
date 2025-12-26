@@ -15,6 +15,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import LinkIcon from "@mui/icons-material/Link";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -23,6 +24,7 @@ const drawerWidth = 240;
 const menuItems = [
   { text: "Referência de Estoque", href: "/", icon: InventoryIcon },
   { text: "Depara Fornecedor", href: "/depara-fornecedor", icon: LinkIcon },
+  { text: "Notas Processadas", href: "/notas-processadas", icon: CheckCircleIcon },
 ];
 
 export default function Sidebar() {
@@ -87,13 +89,16 @@ export default function Sidebar() {
                   selected={isSelected}
                   sx={{
                     minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: open ? 2.5 : 1,
+                    width: "100%",
+                    justifyContent: open ? "flex-start" : "center",
+                    px: open ? 2.5 : 0,
                     minWidth: 0,
                     overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
                     "&.Mui-selected": {
                       backgroundColor: "rgba(25, 118, 210, 0.08)",
-                      borderRight: "3px solid #1976d2",
+                      borderRight: open ? "3px solid #1976d2" : "none",
                       "&:hover": {
                         backgroundColor: "rgba(25, 118, 210, 0.12)",
                       },
@@ -105,19 +110,30 @@ export default function Sidebar() {
                 >
                   <ListItemIcon
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 0,
+                      minWidth: open ? 56 : 0,
+                      width: open ? "auto" : "100%",
+                      marginRight: open ? 3 : 0,
+                      marginLeft: 0,
+                      padding: 0,
                       justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
                       color: isSelected ? "#1976d2" : "inherit",
+                      ...(!open && {
+                        margin: "0 !important",
+                        padding: "0 !important",
+                        width: "100% !important",
+                        maxWidth: "100% !important",
+                        flex: "0 0 100%",
+                      }),
                     }}
                   >
-                    <Icon />
+                    <Icon sx={{ margin: "0 auto" }} />
                   </ListItemIcon>
                   <ListItemText
                     primary={item.text}
                     sx={{
-                      opacity: open ? 1 : 0,
-                      transition: "opacity 0.2s",
+                      display: open ? "block" : "none",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -138,6 +154,7 @@ export default function Sidebar() {
     </Drawer>
   );
 }
+
 
 
 
