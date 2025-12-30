@@ -23,7 +23,7 @@ import { coletarXMLsSharePoint } from "@/lib/api/sharepoint";
 import { useQuery } from "@tanstack/react-query";
 import AlertaNotasSemVinculo from "./AlertaNotasSemVinculo";
 import AlertaContaOrdemTerceiros from "./AlertaContaOrdemTerceiros";
-import AlertaNotasPendentes from "./AlertaNotasPendentes";
+import TabelaNotasComErro from "./AlertaNotasPendentes";
 import { formatCurrency } from "@/lib/utils/formatters";
 
 export const TabelaNotasSaida = () => {
@@ -264,8 +264,8 @@ export const TabelaNotasSaida = () => {
     <Box>
       {renderHeader()}
 
-      {/* Alerta para notas com ERRO */}
-      <AlertaNotasPendentes />
+      {/* Tabela de notas com ERRO */}
+      <TabelaNotasComErro />
 
       {/* Alerta para notas SEM vínculo - Monochrome */}
       {notasSemVinculo.length > 0 && (
