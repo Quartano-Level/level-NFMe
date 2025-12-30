@@ -23,6 +23,7 @@ import { coletarXMLsSharePoint } from "@/lib/api/sharepoint";
 import { useQuery } from "@tanstack/react-query";
 import AlertaNotasSemVinculo from "./AlertaNotasSemVinculo";
 import AlertaContaOrdemTerceiros from "./AlertaContaOrdemTerceiros";
+import AlertaNotasPendentes from "./AlertaNotasPendentes";
 import { formatCurrency } from "@/lib/utils/formatters";
 
 export const TabelaNotasSaida = () => {
@@ -44,28 +45,28 @@ export const TabelaNotasSaida = () => {
     try {
       setColetando(true);
       setResultado(null);
-      
+
       console.log('[TabelaNotasSaida] 📥 Iniciando coleta de XMLs do SharePoint...');
-      
+
       await coletarXMLsSharePoint();
-      
-      setResultado({ 
-        sucesso: true, 
-        mensagem: 'XMLs coletados com sucesso! Atualizando lista...' 
+
+      setResultado({
+        sucesso: true,
+        mensagem: 'XMLs coletados com sucesso! Atualizando lista...'
       });
-      
+
       // Aguarda 1 segundo para mostrar a mensagem de sucesso
       setTimeout(async () => {
         await refetch();
         setResultado(null);
         setColetando(false);
       }, 1500);
-      
+
     } catch (err) {
       console.error('[TabelaNotasSaida] ❌ Erro ao coletar XMLs:', err);
-      setResultado({ 
-        sucesso: false, 
-        mensagem: 'Erro ao coletar as notas no SharePoint' 
+      setResultado({
+        sucesso: false,
+        mensagem: 'Erro ao coletar as notas no SharePoint'
       });
       setColetando(false);
     }
@@ -77,30 +78,30 @@ export const TabelaNotasSaida = () => {
     try {
       setFinalizando(docCodSaida);
       setResultadoFinalizacao(null);
-      
+
       console.log('[TabelaNotasSaida] ✓ Finalizando nota de conta e ordem:', docCodSaida);
-      
+
       await finalizarNotaSaida(docCodSaida);
-      
-      setResultadoFinalizacao({ 
-        sucesso: true, 
-        mensagem: 'Nota finalizada com sucesso! Atualizando lista...', 
-        docCod: docCodSaida 
+
+      setResultadoFinalizacao({
+        sucesso: true,
+        mensagem: 'Nota finalizada com sucesso! Atualizando lista...',
+        docCod: docCodSaida
       });
-      
+
       // Aguarda 1 segundo para mostrar a mensagem de sucesso
       setTimeout(async () => {
         await refetch();
         setResultadoFinalizacao(null);
         setFinalizando(null);
       }, 1500);
-      
+
     } catch (err) {
       console.error('[TabelaNotasSaida] ❌ Erro ao finalizar nota:', err);
-      setResultadoFinalizacao({ 
-        sucesso: false, 
-        mensagem: 'Erro ao finalizar a nota de saída', 
-        docCod: docCodSaida 
+      setResultadoFinalizacao({
+        sucesso: false,
+        mensagem: 'Erro ao finalizar a nota de saída',
+        docCod: docCodSaida
       });
       setFinalizando(null);
     }
@@ -113,7 +114,7 @@ export const TabelaNotasSaida = () => {
         <Typography sx={{ ml: 2 }}>Carregando notas de saída...</Typography>
       </Box>
     );
-  
+
   if (error)
     return (
       <Typography color="error" align="center" sx={{ my: 4 }}>
@@ -133,9 +134,9 @@ export const TabelaNotasSaida = () => {
     <Box>
       {/* Alerta de resultado da coleta */}
       {resultado && (
-        <Alert 
+        <Alert
           severity={resultado.sucesso ? "success" : "error"}
-          sx={{ 
+          sx={{
             mb: 3,
             border: `1px solid ${resultado.sucesso ? '#34c759' : '#ff3b30'}`,
             borderRadius: '12px',
@@ -153,9 +154,9 @@ export const TabelaNotasSaida = () => {
 
       {/* Alerta de resultado da finalização */}
       {resultadoFinalizacao && (
-        <Alert 
+        <Alert
           severity={resultadoFinalizacao.sucesso ? "success" : "error"}
-          sx={{ 
+          sx={{
             mb: 3,
             border: `1px solid ${resultadoFinalizacao.sucesso ? '#34c759' : '#ff3b30'}`,
             borderRadius: '12px',
@@ -208,11 +209,11 @@ export const TabelaNotasSaida = () => {
     return (
       <Box>
         {renderHeader()}
-        
-        <Paper 
+
+        <Paper
           elevation={0}
-          sx={{ 
-            p: 6, 
+          sx={{
+            p: 6,
             textAlign: 'center',
             border: '1px solid #e5e5e7',
             borderRadius: '12px',
@@ -234,9 +235,9 @@ export const TabelaNotasSaida = () => {
           >
             ✓
           </Box>
-          <Typography 
-            variant="h6" 
-            sx={{ 
+          <Typography
+            variant="h6"
+            sx={{
               fontWeight: 600,
               fontSize: '1.125rem',
               color: '#1d1d1f',
@@ -245,9 +246,9 @@ export const TabelaNotasSaida = () => {
           >
             Tudo em dia
           </Typography>
-          <Typography 
-            variant="body2" 
-            sx={{ 
+          <Typography
+            variant="body2"
+            sx={{
               color: '#86868b',
               fontSize: '0.9375rem'
             }}
@@ -263,6 +264,9 @@ export const TabelaNotasSaida = () => {
     <Box>
       {renderHeader()}
 
+      {/* Alerta para notas com ERRO */}
+      <AlertaNotasPendentes />
+
       {/* Alerta para notas SEM vínculo - Monochrome */}
       {notasSemVinculo.length > 0 && (
         <AlertaNotasSemVinculo notas={notasSemVinculo} />
@@ -275,9 +279,9 @@ export const TabelaNotasSaida = () => {
 
       {/* Tabela de notas PENDENTES - Estilo Apple */}
       {notasPendentes.length > 0 && (
-        <Paper 
+        <Paper
           elevation={0}
-          sx={{ 
+          sx={{
             border: '1px solid #e5e5e7',
             borderRadius: '12px',
             overflow: 'hidden',
@@ -285,14 +289,14 @@ export const TabelaNotasSaida = () => {
           }}
         >
           {/* Header da Tabela */}
-          <Box sx={{ 
-            p: 3, 
+          <Box sx={{
+            p: 3,
             borderBottom: '1px solid #e5e5e7',
             backgroundColor: '#fafafa'
           }}>
-            <Typography 
-              variant="h6" 
-              sx={{ 
+            <Typography
+              variant="h6"
+              sx={{
                 fontWeight: 600,
                 fontSize: '1.125rem',
                 color: '#1d1d1f',
@@ -302,9 +306,9 @@ export const TabelaNotasSaida = () => {
             >
               Notas pendentes
             </Typography>
-            <Typography 
-              variant="body2" 
-              sx={{ 
+            <Typography
+              variant="body2"
+              sx={{
                 color: '#86868b',
                 fontSize: '0.875rem'
               }}
@@ -312,13 +316,13 @@ export const TabelaNotasSaida = () => {
               {totalPendentes} {totalPendentes === 1 ? 'nota pronta' : 'notas prontas'} para Referência
             </Typography>
           </Box>
-          
+
           {/* Tabela Minimalista */}
           <TableContainer>
             <Table sx={{ minWidth: 650 }}>
               <TableHead>
-                <TableRow sx={{ 
-                  '& th': { 
+                <TableRow sx={{
+                  '& th': {
                     borderBottom: '1px solid #e5e5e7',
                     py: 2,
                     px: 3,
@@ -339,9 +343,9 @@ export const TabelaNotasSaida = () => {
               </TableHead>
               <TableBody>
                 {notasPendentes.map((ns, index) => (
-                  <TableRow 
+                  <TableRow
                     key={ns.docCod}
-                    sx={{ 
+                    sx={{
                       transition: 'background-color 0.2s',
                       '&:hover': {
                         backgroundColor: '#fafafa'
@@ -355,9 +359,9 @@ export const TabelaNotasSaida = () => {
                   >
                     <TableCell>
                       <Box>
-                        <Typography 
-                          variant="body2" 
-                          sx={{ 
+                        <Typography
+                          variant="body2"
+                          sx={{
                             fontWeight: 600,
                             fontSize: '0.9375rem',
                             color: '#1d1d1f',
@@ -366,9 +370,9 @@ export const TabelaNotasSaida = () => {
                         >
                           #{ns.docEspNumero}
                         </Typography>
-                        <Typography 
-                          variant="caption" 
-                          sx={{ 
+                        <Typography
+                          variant="caption"
+                          sx={{
                             color: '#86868b',
                             fontSize: '0.8125rem'
                           }}
@@ -377,11 +381,11 @@ export const TabelaNotasSaida = () => {
                         </Typography>
                       </Box>
                     </TableCell>
-                    
+
                     <TableCell>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           fontSize: '0.9375rem',
                           color: '#1d1d1f',
                           overflow: 'hidden',
@@ -393,11 +397,11 @@ export const TabelaNotasSaida = () => {
                         {ns.dpeNomPessoa}
                       </Typography>
                     </TableCell>
-                    
+
                     <TableCell align="right">
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           fontSize: '0.9375rem',
                           color: '#1d1d1f',
                           fontVariantNumeric: 'tabular-nums'
@@ -406,11 +410,11 @@ export const TabelaNotasSaida = () => {
                         {formatCurrency(ns.docMnyValor)}
                       </Typography>
                     </TableCell>
-                    
+
                     <TableCell>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           fontSize: '0.875rem',
                           color: '#86868b',
                           fontVariantNumeric: 'tabular-nums'
@@ -419,7 +423,7 @@ export const TabelaNotasSaida = () => {
                         {new Date(ns.docDtaEmissao).toLocaleDateString('pt-BR')}
                       </Typography>
                     </TableCell>
-                    
+
                     <TableCell align="center">
                       <Box
                         sx={{
@@ -439,11 +443,11 @@ export const TabelaNotasSaida = () => {
                         {ns.qtdItens || 0}
                       </Box>
                     </TableCell>
-                    
+
                     <TableCell align="right">
                       <Link href={`/${ns.docCod}`} style={{ textDecoration: 'none' }}>
-                        <Button 
-                          variant="contained" 
+                        <Button
+                          variant="contained"
                           size="small"
                           sx={{
                             backgroundColor: '#1d1d1f',
