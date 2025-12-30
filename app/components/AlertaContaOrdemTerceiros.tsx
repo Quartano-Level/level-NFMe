@@ -22,7 +22,7 @@ export default function AlertaContaOrdemTerceiros({ notas }: AlertaContaOrdemTer
   }
 
   const abrirNoConexos = (numeroNota: string) => {
-    const url = `https://savixx.conexos.cloud/com297#/?pageNumber=1&pageSize=20&searchOnLoad=true&orderBy=desc&sortBy=docCod&docEspNumero!LIKE=${encodeURIComponent(numeroNota)}&vldStatus!IN=1&vldStatus!IN=2&vldStatus!IN=3&vldStatus!IN=7`;
+    const url = `https://level.conexos.cloud/com297#/?pageNumber=1&pageSize=20&searchOnLoad=true&orderBy=desc&sortBy=docCod&docEspNumero!LIKE=${encodeURIComponent(numeroNota)}&vldStatus!IN=1&vldStatus!IN=2&vldStatus!IN=3&vldStatus!IN=7`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 

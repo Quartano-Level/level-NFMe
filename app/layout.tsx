@@ -6,8 +6,8 @@ import Sidebar from "./components/Sidebar";
 import { Box } from "@mui/material";
 
 export const metadata: Metadata = {
-  title: "Savixx - Referência de Estoque",
-  description: "Interface para Referência de estoque Savixx",
+  title: "Level - Referência de Estoque",
+  description: "Interface para Referência de estoque Level",
 };
 
 export default function RootLayout({
