@@ -277,8 +277,8 @@ export const TabelaNotasSaida = () => {
         <AlertaContaOrdemTerceiros notas={notasContaOrdemTerceiros} />
       )}
 
-      {/* Tabela de notas PENDENTES - Estilo Apple */}
-      {notasPendentes.length > 0 && (
+      {/* Tabela de notas PENDENTES - Estilo Apple - TEMPORARIAMENTE OCULTO */}
+      {false && notasPendentes.length > 0 && (
         <Paper
           elevation={0}
           sx={{
