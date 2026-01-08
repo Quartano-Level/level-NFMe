@@ -128,6 +128,38 @@ export const TabelaNotasSaida = () => {
   const totalPendentes = data?.pendentes?.count || 0;
   const totalSemVinculo = data?.sem_vinculo?.count || 0;
   const totalContaOrdemTerceiros = data?.conta_e_ordem_terceiros?.count || 0;
+  const lastExecution = data?.last_execution;
+
+  // Função para formatar data/hora
+  const formatDateTime = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  // Função para determinar cor do status
+  const getStatusColor = (status: string) => {
+    switch (status?.toUpperCase()) {
+      case 'CONCLUÍDO':
+      case 'CONCLUIDO':
+      case 'SUCESSO':
+        return '#34c759';
+      case 'EM ANDAMENTO':
+      case 'PROCESSANDO':
+        return '#ff9500';
+      case 'ERRO':
+      case 'FALHA':
+      case 'FALHOU':
+        return '#ff3b30';
+      default:
+        return '#86868b';
+    }
+  };
 
   // Renderiza alertas e botão de atualização sempre
   const renderHeader = () => (
@@ -170,6 +202,110 @@ export const TabelaNotasSaida = () => {
             {resultadoFinalizacao.mensagem}
           </Typography>
         </Alert>
+      )}
+
+      {/* Status da última execução */}
+      {lastExecution && (
+        <Box
+          sx={{
+            mb: 3,
+            p: 2,
+            border: '1px solid #e5e5e7',
+            borderRadius: '12px',
+            backgroundColor: '#fafafa',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 2
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
+            {/* Status */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box
+                sx={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  backgroundColor: getStatusColor(lastExecution.status),
+                  animation: lastExecution.status?.toUpperCase() === 'EM ANDAMENTO'
+                    ? 'pulse 2s infinite'
+                    : 'none',
+                  '@keyframes pulse': {
+                    '0%': { opacity: 1 },
+                    '50%': { opacity: 0.4 },
+                    '100%': { opacity: 1 }
+                  }
+                }}
+              />
+              <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: '#1d1d1f' }}>
+                {lastExecution.status}
+              </Typography>
+            </Box>
+
+            {/* Origem */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography sx={{ fontSize: '0.8125rem', color: '#86868b' }}>
+                Origem:
+              </Typography>
+              <Typography sx={{ fontSize: '0.8125rem', fontWeight: 500, color: '#1d1d1f' }}>
+                {lastExecution.tipo}
+              </Typography>
+            </Box>
+
+            {/* Notas encontradas */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Typography sx={{ fontSize: '0.8125rem', color: '#86868b' }}>
+                Notas encontradas:
+              </Typography>
+              <Typography sx={{ fontSize: '0.8125rem', fontWeight: 600, color: '#1d1d1f' }}>
+                {lastExecution.notas_encontradas}
+              </Typography>
+            </Box>
+
+            {/* Data/hora */}
+            <Typography sx={{ fontSize: '0.8125rem', color: '#86868b' }}>
+              {formatDateTime(lastExecution.created_at)}
+            </Typography>
+          </Box>
+
+          {/* Exibição do erro quando status for FALHOU */}
+          {lastExecution.status?.toUpperCase() === 'FALHOU' && lastExecution.error && (
+            <Box
+              sx={{
+                width: '100%',
+                mt: 2,
+                p: 2,
+                backgroundColor: '#fff5f5',
+                border: '1px solid #ff3b30',
+                borderRadius: '8px'
+              }}
+            >
+              <Typography sx={{ fontSize: '0.8125rem', fontWeight: 600, color: '#ff3b30', mb: 1 }}>
+                ⚠️ Detalhes do erro:
+              </Typography>
+              <Box
+                component="pre"
+                sx={{
+                  fontSize: '0.75rem',
+                  color: '#1d1d1f',
+                  backgroundColor: '#fff',
+                  p: 1.5,
+                  borderRadius: '6px',
+                  overflow: 'auto',
+                  maxHeight: '200px',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                  fontFamily: 'monospace',
+                  margin: 0
+                }}
+              >
+                {lastExecution.error}
+              </Box>
+            </Box>
+          )}
+        </Box>
       )}
 
       {/* Botão de atualização */}

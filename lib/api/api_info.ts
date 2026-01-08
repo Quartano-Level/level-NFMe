@@ -22,12 +22,39 @@ export interface ListagemNotasSaidaResponse {
 }
 
 /**
+ * Informações da última execução de coleta
+ */
+export interface LastExecutionInfo {
+  id: string;
+  created_at: string;
+  tipo: string;
+  notas_encontradas: number;
+  status: string;
+  error?: string | null;
+}
+
+/**
+ * Resposta da API - formato do objeto retornado
+ * sem_vinculo pode vir como:
+ * - { count, pageNumber, rows[] } quando há notas sem vínculo
+ * - { doccod_saidas: null } quando não há notas sem vínculo
+ */
+export interface ListagemNotasSaidaFilialItem {
+  pendentes: ListagemNotasSaidaResponse;
+  sem_vinculo: ListagemNotasSaidaResponse | { doccod_saidas: null };
+  conta_e_ordem_terceiros: ListagemNotasSaidaResponse | null;
+  last_execution: LastExecutionInfo | null;
+}
+
+/**
  * Response da listFront - retorna pendentes, sem_vinculo e conta_e_ordem_terceiros
+ * Este é o formato consolidado usado internamente após agregar todas as filiais
  */
 export interface ListagemNotasSaidaComVinculoResponse {
   pendentes: ListagemNotasSaidaResponse;
   sem_vinculo: ListagemNotasSaidaResponse;
   conta_e_ordem_terceiros: ListagemNotasSaidaResponse | null;
+  last_execution: LastExecutionInfo | null;
 }
 
 export interface DetailNotaSaidaResponse {
