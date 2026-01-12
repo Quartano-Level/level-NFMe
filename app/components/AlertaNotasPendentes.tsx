@@ -21,12 +21,23 @@ import {
     MenuItem,
     InputAdornment,
     Chip,
+    Checkbox,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
+    Button,
+    FormControlLabel,
+    Snackbar,
+    Alert,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { useQuery } from "@tanstack/react-query";
-import { getNotasPendentes, NotaPendente } from "@/lib/api/notas-pendentes";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getNotasPendentes, NotaPendente, checkNotaErro } from "@/lib/api/notas-pendentes";
 
 type Order = 'asc' | 'desc';
 type OrderBy = 'doc_esp_num' | 'sharepoint_name' | 'motivo' | 'created_at' | 'docCod';
@@ -36,6 +47,18 @@ export const TabelaNotasComErro = () => {
     const [orderBy, setOrderBy] = useState<OrderBy>('created_at');
     const [searchTerm, setSearchTerm] = useState('');
     const [motivoFilter, setMotivoFilter] = useState<string>('');
+    const [notasSelecionadas, setNotasSelecionadas] = useState<Set<number>>(new Set());
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [deleteOnSharepoint, setDeleteOnSharepoint] = useState(false);
+    const [loadingCheck, setLoadingCheck] = useState(false);
+    const [processandoNota, setProcessandoNota] = useState<string | null>(null);
+    const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+        open: false,
+        message: '',
+        severity: 'success',
+    });
+
+    const queryClient = useQueryClient();
 
     const { data: notas = [], isLoading, error } = useQuery({
         queryKey: ['notasPendentes'],
@@ -110,6 +133,113 @@ export const TabelaNotasComErro = () => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
+    };
+
+    const handleToggleNota = (notaId: number) => {
+        setNotasSelecionadas((prev) => {
+            const novo = new Set(prev);
+            if (novo.has(notaId)) {
+                novo.delete(notaId);
+            } else {
+                novo.add(notaId);
+            }
+            return novo;
+        });
+    };
+
+    const handleSelectAll = () => {
+        if (notasSelecionadas.size === filteredAndSortedNotas.length) {
+            setNotasSelecionadas(new Set());
+        } else {
+            setNotasSelecionadas(new Set(filteredAndSortedNotas.map((n) => n.id)));
+        }
+    };
+
+    const handleConcluirSelecionadas = () => {
+        if (notasSelecionadas.size === 0) return;
+        setDeleteOnSharepoint(false);
+        setDialogOpen(true);
+    };
+
+    const handleDialogClose = () => {
+        if (!loadingCheck) {
+            setDialogOpen(false);
+            setDeleteOnSharepoint(false);
+        }
+    };
+
+    const handleConfirmCheck = async () => {
+        if (notasSelecionadas.size === 0) return;
+
+        setLoadingCheck(true);
+        const notasParaProcessar = filteredAndSortedNotas.filter((nota) =>
+            notasSelecionadas.has(nota.id)
+        );
+
+        let sucessos = 0;
+        let erros = 0;
+
+        for (const nota of notasParaProcessar) {
+            try {
+                // Validar se sharepoint_id existe (obrigatório para identificar a linha na tabela)
+                if (!nota.sharepoint_id) {
+                    throw new Error('sharepoint_id não encontrado para esta nota');
+                }
+
+                setProcessandoNota(nota.doc_esp_num);
+                await checkNotaErro(nota.sharepoint_id, deleteOnSharepoint);
+                sucessos++;
+
+                // Feedback individual para cada nota processada
+                setSnackbar({
+                    open: true,
+                    message: `Nota #${nota.doc_esp_num} marcada como concluída!`,
+                    severity: 'success',
+                });
+
+                // Pequeno delay para o usuário ver o feedback
+                await new Promise((resolve) => setTimeout(resolve, 500));
+            } catch (err) {
+                erros++;
+                setSnackbar({
+                    open: true,
+                    message: `Erro ao processar nota #${nota.doc_esp_num}: ${err instanceof Error ? err.message : 'Erro desconhecido'}`,
+                    severity: 'error',
+                });
+                // Delay mesmo em caso de erro
+                await new Promise((resolve) => setTimeout(resolve, 500));
+            }
+        }
+
+        setProcessandoNota(null);
+
+        // Feedback final
+        if (erros === 0) {
+            setSnackbar({
+                open: true,
+                message: `Todas as ${sucessos} nota(s) foram marcadas como concluídas com sucesso!`,
+                severity: 'success',
+            });
+        } else {
+            setSnackbar({
+                open: true,
+                message: `Processamento concluído: ${sucessos} sucesso(s), ${erros} erro(s)`,
+                severity: erros === notasParaProcessar.length ? 'error' : 'success',
+            });
+        }
+
+        // Invalidar a query para atualizar a lista
+        await queryClient.invalidateQueries({ queryKey: ['notasPendentes'] });
+
+        // Limpar seleções
+        setNotasSelecionadas(new Set());
+        setDialogOpen(false);
+        setDeleteOnSharepoint(false);
+        setLoadingCheck(false);
+    };
+
+    const handleSnackbarClose = () => {
+        setSnackbar({ ...snackbar, open: false });
     };
 
     if (isLoading) {
@@ -277,6 +407,24 @@ export const TabelaNotasComErro = () => {
                             }}
                         />
                     )}
+
+                    {notasSelecionadas.size > 0 && (
+                        <Button
+                            variant="contained"
+                            onClick={handleConcluirSelecionadas}
+                            startIcon={<CheckCircleIcon />}
+                            sx={{
+                                height: 40,
+                                backgroundColor: '#1d1d1f',
+                                color: '#fff',
+                                '&:hover': {
+                                    backgroundColor: '#2c2c2e',
+                                },
+                            }}
+                        >
+                            Concluir {notasSelecionadas.size} selecionada{notasSelecionadas.size > 1 ? 's' : ''}
+                        </Button>
+                    )}
                 </Box>
             </Box>
 
@@ -299,6 +447,22 @@ export const TabelaNotasComErro = () => {
                                 },
                             }}
                         >
+                            <TableCell padding="checkbox" sx={{ width: 60 }}>
+                                <Checkbox
+                                    indeterminate={notasSelecionadas.size > 0 && notasSelecionadas.size < filteredAndSortedNotas.length}
+                                    checked={filteredAndSortedNotas.length > 0 && notasSelecionadas.size === filteredAndSortedNotas.length}
+                                    onChange={handleSelectAll}
+                                    sx={{
+                                        color: '#1d1d1f',
+                                        '&.Mui-checked': {
+                                            color: '#1d1d1f',
+                                        },
+                                        '&.MuiCheckbox-indeterminate': {
+                                            color: '#1d1d1f',
+                                        },
+                                    }}
+                                />
+                            </TableCell>
                             <TableCell>
                                 <TableSortLabel
                                     active={orderBy === 'doc_esp_num'}
@@ -350,7 +514,7 @@ export const TabelaNotasComErro = () => {
                     <TableBody>
                         {filteredAndSortedNotas.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
+                                <TableCell colSpan={8} align="center" sx={{ py: 4 }}>
                                     <Typography sx={{ color: '#86868b' }}>
                                         Nenhuma nota encontrada com os filtros aplicados.
                                     </Typography>
@@ -375,6 +539,19 @@ export const TabelaNotasComErro = () => {
                                         },
                                     }}
                                 >
+                                    <TableCell padding="checkbox">
+                                        <Checkbox
+                                            checked={notasSelecionadas.has(nota.id)}
+                                            onChange={() => handleToggleNota(nota.id)}
+                                            disabled={loadingCheck}
+                                            sx={{
+                                                color: '#1d1d1f',
+                                                '&.Mui-checked': {
+                                                    color: '#1d1d1f',
+                                                },
+                                            }}
+                                        />
+                                    </TableCell>
                                     <TableCell>
                                         <Typography
                                             sx={{
@@ -479,6 +656,99 @@ export const TabelaNotasComErro = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            {/* Dialog de Confirmação */}
+            <Dialog
+                open={dialogOpen}
+                onClose={handleDialogClose}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle sx={{ fontWeight: 600, fontSize: '1.125rem' }}>
+                    Marcar notas como concluídas
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText sx={{ mb: 3, color: '#1d1d1f' }}>
+                        Você está prestes a marcar <strong>{notasSelecionadas.size}</strong> nota{notasSelecionadas.size > 1 ? 's' : ''} como concluída{notasSelecionadas.size > 1 ? 's' : ''}.
+                        {processandoNota && (
+                            <Box sx={{ mt: 2, p: 2, backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
+                                <Typography sx={{ fontSize: '0.875rem', color: '#1d1d1f', fontWeight: 500 }}>
+                                    Processando nota #{processandoNota}...
+                                </Typography>
+                            </Box>
+                        )}
+                    </DialogContentText>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={deleteOnSharepoint}
+                                onChange={(e) => setDeleteOnSharepoint(e.target.checked)}
+                                disabled={loadingCheck}
+                                sx={{
+                                    color: '#1d1d1f',
+                                    '&.Mui-checked': {
+                                        color: '#1d1d1f',
+                                    },
+                                }}
+                            />
+                        }
+                        label={
+                            <Typography sx={{ fontSize: '0.9375rem', color: '#1d1d1f' }}>
+                                Remover {notasSelecionadas.size > 1 ? 'todas as notas' : 'esta nota'} do SharePoint
+                            </Typography>
+                        }
+                    />
+                </DialogContent>
+                <DialogActions sx={{ p: 2.5, pt: 2 }}>
+                    <Button
+                        onClick={handleDialogClose}
+                        disabled={loadingCheck}
+                        sx={{
+                            color: '#86868b',
+                            '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                            },
+                        }}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button
+                        onClick={handleConfirmCheck}
+                        disabled={loadingCheck}
+                        variant="contained"
+                        startIcon={loadingCheck ? <CircularProgress size={16} /> : null}
+                        sx={{
+                            backgroundColor: '#1d1d1f',
+                            color: '#fff',
+                            '&:hover': {
+                                backgroundColor: '#2c2c2e',
+                            },
+                            '&:disabled': {
+                                backgroundColor: '#e5e5e7',
+                                color: '#86868b',
+                            },
+                        }}
+                    >
+                        {loadingCheck ? 'Processando...' : 'Confirmar'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Snackbar de Feedback */}
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity={snackbar.severity}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Paper>
     );
 };
