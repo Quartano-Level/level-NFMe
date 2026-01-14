@@ -26,7 +26,7 @@ export default function NotasProcessadasPage() {
   }, [page, limit, filtrosAplicados]);
 
   // Query para buscar as notas processadas
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["notasProcessadas", page, limit, filtrosAplicados],
     queryFn: buscarNotas,
     refetchOnWindowFocus: false,

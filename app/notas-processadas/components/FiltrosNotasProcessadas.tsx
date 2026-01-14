@@ -68,7 +68,7 @@ export default function FiltrosNotasProcessadasComponent({
       </Box>
 
       <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <TextField
             label="Código da Nota"
             variant="outlined"
@@ -80,7 +80,7 @@ export default function FiltrosNotasProcessadasComponent({
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <TextField
             label="Número da Nota"
             variant="outlined"
@@ -92,7 +92,7 @@ export default function FiltrosNotasProcessadasComponent({
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <TextField
             label="Cliente"
             variant="outlined"
@@ -104,7 +104,7 @@ export default function FiltrosNotasProcessadasComponent({
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <TextField
             label="Código da Pessoa"
             variant="outlined"
@@ -116,7 +116,7 @@ export default function FiltrosNotasProcessadasComponent({
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box display="flex" gap={2} justifyContent="flex-end">
             <Button
               variant="outlined"
