@@ -8,19 +8,29 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Box,
   Typography,
   Chip,
   TableSortLabel,
-  InputAdornment,
   Paper,
+  Pagination,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Stack,
+  Button,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { NotaProcessada } from "@/lib/api/notas-processadas";
 
 interface TabelaNotasProcessadasProps {
   data: NotaProcessada[];
+  total: number;
+  page: number;
+  limit: number;
+  onPageChange: (page: number) => void;
+  onLimitChange: (limit: number) => void;
   isLoading?: boolean;
 }
 
@@ -29,24 +39,22 @@ type OrderBy = "docCod" | "conexos_status" | "pesCod";
 
 export default function TabelaNotasProcessadas({
   data,
+  total,
+  page,
+  limit,
+  onPageChange,
+  onLimitChange,
   isLoading = false,
 }: TabelaNotasProcessadasProps) {
-  const [searchDocCod, setSearchDocCod] = useState("");
   const [orderBy, setOrderBy] = useState<OrderBy>("docCod");
   const [order, setOrder] = useState<Order>("desc");
 
-  const filteredAndSortedData = useMemo(() => {
-    let filtered = data;
+  // Calcular número total de páginas
+  const totalPages = Math.ceil(total / limit);
 
-    // Filtro por docCod
-    if (searchDocCod.trim()) {
-      filtered = filtered.filter((nota) =>
-        nota.docCod?.toString().toLowerCase().includes(searchDocCod.toLowerCase())
-      );
-    }
-
-    // Ordenação
-    const sorted = [...filtered].sort((a, b) => {
+  // Ordenação local (os filtros são feitos no backend)
+  const sortedData = useMemo(() => {
+    const sorted = [...data].sort((a, b) => {
       let aValue: string | number = "";
       let bValue: string | number = "";
 
@@ -83,7 +91,7 @@ export default function TabelaNotasProcessadas({
     });
 
     return sorted;
-  }, [data, searchDocCod, orderBy, order]);
+  }, [data, orderBy, order]);
 
   const handleRequestSort = (property: OrderBy) => {
     const isAsc = orderBy === property && order === "asc";
@@ -113,28 +121,29 @@ export default function TabelaNotasProcessadas({
 
   return (
     <Box>
-      {/* Filtros */}
+      {/* Controles de paginação */}
       <Box mb={3}>
         <Paper elevation={1} sx={{ p: 2 }}>
           <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
-            <TextField
-              label="Buscar por Código da Nota"
-              variant="outlined"
-              size="small"
-              value={searchDocCod}
-              onChange={(e) => setSearchDocCod(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ minWidth: 250 }}
-            />
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Itens por página</InputLabel>
+              <Select
+                value={limit}
+                label="Itens por página"
+                onChange={(e) => {
+                  onLimitChange(Number(e.target.value));
+                  onPageChange(1); // Resetar para primeira página ao mudar limit
+                }}
+              >
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+                <MenuItem value={100}>100</MenuItem>
+              </Select>
+            </FormControl>
             <Box flexGrow={1} />
             <Typography variant="body2" color="text.secondary">
-              {filteredAndSortedData.length} nota{filteredAndSortedData.length !== 1 ? "s" : ""} encontrada{filteredAndSortedData.length !== 1 ? "s" : ""}
+              Mostrando {data.length} de {total} nota{total !== 1 ? "s" : ""}
             </Typography>
           </Box>
         </Paper>
@@ -157,6 +166,16 @@ export default function TabelaNotasProcessadas({
                 </TableSortLabel>
               </TableCell>
               <TableCell>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Número da Nota
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Cliente
+                </Typography>
+              </TableCell>
+              <TableCell>
                 <TableSortLabel
                   active={orderBy === "conexos_status"}
                   direction={orderBy === "conexos_status" ? order : "asc"}
@@ -168,20 +187,14 @@ export default function TabelaNotasProcessadas({
                 </TableSortLabel>
               </TableCell>
               <TableCell>
-                <TableSortLabel
-                  active={orderBy === "pesCod"}
-                  direction={orderBy === "pesCod" ? order : "asc"}
-                  onClick={() => handleRequestSort("pesCod")}
-                >
-                  <Typography variant="subtitle2" fontWeight="bold">
-                    Código da Pessoa
-                  </Typography>
-                </TableSortLabel>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Link
+                </Typography>
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredAndSortedData.map((nota) => (
+            {sortedData.map((nota) => (
               <TableRow
                 key={nota.id}
                 hover
@@ -194,6 +207,16 @@ export default function TabelaNotasProcessadas({
                 <TableCell>
                   <Typography variant="body2" fontWeight={500}>
                     {nota.docCod || "-"}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2">
+                    {nota.numero_nota || "-"}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2">
+                    {nota.cliente || "-"}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -212,15 +235,54 @@ export default function TabelaNotasProcessadas({
                   />
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2">
-                    {nota.pesCod || "-"}
-                  </Typography>
+                  {nota.docCod ? (
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<OpenInNewIcon />}
+                      onClick={() => {
+                        window.open(
+                          `https://level.conexos.cloud/com297#/cadastro/${nota.docCod}`,
+                          "_blank"
+                        );
+                      }}
+                      sx={{
+                        textTransform: "none",
+                      }}
+                    >
+                      Abrir
+                    </Button>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      -
+                    </Typography>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Paginação */}
+      {totalPages > 1 && (
+        <Box mt={3} display="flex" justifyContent="center">
+          <Stack spacing={2} alignItems="center">
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={(_, newPage) => onPageChange(newPage)}
+              color="primary"
+              showFirstButton
+              showLastButton
+              size="large"
+            />
+            <Typography variant="body2" color="text.secondary">
+              Página {page} de {totalPages}
+            </Typography>
+          </Stack>
+        </Box>
+      )}
     </Box>
   );
 }

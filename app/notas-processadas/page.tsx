@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   Box,
   Container,
@@ -10,17 +10,46 @@ import {
   Alert,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { getNotasProcessadas } from "@/lib/api/notas-processadas";
+import { getNotasProcessadas, FiltrosNotasProcessadas } from "@/lib/api/notas-processadas";
 import TabelaNotasProcessadas from "./components/TabelaNotasProcessadas";
+import FiltrosNotasProcessadasComponent from "./components/FiltrosNotasProcessadas";
 
 export default function NotasProcessadasPage() {
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [filtros, setFiltros] = useState<FiltrosNotasProcessadas>({});
+  const [filtrosAplicados, setFiltrosAplicados] = useState<FiltrosNotasProcessadas>({});
+
+  // Função para buscar notas
+  const buscarNotas = useCallback(async () => {
+    return await getNotasProcessadas(page, limit, filtrosAplicados);
+  }, [page, limit, filtrosAplicados]);
+
   // Query para buscar as notas processadas
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["notasProcessadas"],
-    queryFn: async () => await getNotasProcessadas(),
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["notasProcessadas", page, limit, filtrosAplicados],
+    queryFn: buscarNotas,
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
+
+  const handleFiltrosChange = (novosFiltros: FiltrosNotasProcessadas) => {
+    setFiltros(novosFiltros);
+  };
+
+  const handlePesquisar = () => {
+    setFiltrosAplicados(filtros);
+    setPage(1); // Resetar para primeira página ao pesquisar
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1); // Resetar para primeira página ao mudar limit
+  };
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -47,9 +76,25 @@ export default function NotasProcessadasPage() {
       )}
 
       {!isLoading && !error && data !== undefined && (
-        <Paper elevation={2} sx={{ p: 3 }}>
-          <TabelaNotasProcessadas data={data || []} isLoading={isLoading} />
-        </Paper>
+        <>
+          <FiltrosNotasProcessadasComponent
+            filtros={filtros}
+            onFiltrosChange={handleFiltrosChange}
+            onPesquisar={handlePesquisar}
+            isLoading={isLoading}
+          />
+          <Paper elevation={2} sx={{ p: 3 }}>
+            <TabelaNotasProcessadas
+              data={data.data || []}
+              total={data.total || 0}
+              page={page}
+              limit={limit}
+              onPageChange={handlePageChange}
+              onLimitChange={handleLimitChange}
+              isLoading={isLoading}
+            />
+          </Paper>
+        </>
       )}
 
       {!isLoading && !error && data === undefined && (
